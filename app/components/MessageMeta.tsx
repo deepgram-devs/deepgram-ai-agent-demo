@@ -10,7 +10,7 @@ const TTFB = () => (
   <Tooltip
     showArrow
     className="p-5"
-    content="Time to first byte (TTFB) measures just how fast a website or service starts to send data."
+    content="Time to first byte (TTFB) is the time it takes from initiating an API request to receiving the first byte of audio from the response."
   >
     <span className="underline decoration-dotted">Time to first-byte</span>
   </Tooltip>
