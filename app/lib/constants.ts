@@ -86,11 +86,11 @@ export const systemContent = `
 
 export const greetings = [
   {
-    text: "%s. How are you today?",
+    text: "%s. How are you doing?",
     strings: [contextualHello()],
   },
   {
-    text: "%s! I'm excited to talk to you about Aura! Want to hear more about Deepgram's new Text-to-Speech model?",
+    text: "%s! I’m excited to talk to you about Deepgram’s new text to speech model Aura. Do you want to learn more about Aura?",
     strings: [contextualHello()],
   },
 ];
