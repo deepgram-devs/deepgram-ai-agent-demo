@@ -24,7 +24,7 @@ export const viewport: Viewport = {
   themeColor: "#000000",
   initialScale: 1,
   width: "device-width",
-  maximumScale: 1,
+  // maximumScale: 1, hitting accessability
 };
 
 export const metadata: Metadata = {

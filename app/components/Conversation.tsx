@@ -416,18 +416,6 @@ export default function Conversation(): JSX.Element {
     }
   }, [chatMessages]);
 
-  /**
-   * loading message (api key)
-   */
-  if (!connection) {
-    return (
-      <div className="w-auto h-full items-center flex justify-center">
-        <Spinner size={"sm"} className="-mt-1 mr-2" />
-        Connecting...
-      </div>
-    );
-  }
-
   return (
     <>
       <NextUIProvider className="h-full">
@@ -442,7 +430,7 @@ export default function Conversation(): JSX.Element {
                 >
                   <div className="grid grid-cols-12 overflow-x-auto gap-y-2">
                     {initialLoad ? (
-                      <InitialLoad fn={startConversation} />
+                      <InitialLoad fn={startConversation} connecting={!connection} />
                     ) : (
                       <>
                         {chatMessages.length > 0 &&

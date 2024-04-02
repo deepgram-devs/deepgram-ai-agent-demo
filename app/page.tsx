@@ -1,19 +1,19 @@
 "use client";
 
-import Conversation from "./components/Conversation";
 import Image from "next/image";
 import GitHubButton from "react-github-btn";
 
 export const runtime = "edge";
-import * as FullStory from "@fullstory/browser";
+import { init } from "@fullstory/browser";
 import { useEffect } from "react";
 import { XIcon } from "./components/icons/XIcon";
 import { FacebookIcon } from "./components/icons/FacebookIcon";
 import { LinkedInIcon } from "./components/icons/LinkedInIcon";
+import Conversation from "./components/Conversation";
 
 export default function Home() {
   useEffect(() => {
-    FullStory.init({ orgId: "5HWAN" });
+    init({ orgId: "5HWAN" });
   }, []);
 
   return (
@@ -80,6 +80,7 @@ export default function Home() {
 
                 return e.preventDefault();
               }}
+              aria-label="follow on twitter"
               target="_blank"
             >
               <XIcon className="mb-1" />
@@ -95,6 +96,7 @@ export default function Home() {
 
                 return e.preventDefault();
               }}
+              aria-label="follow on Linkedin"
             >
               <LinkedInIcon className="mb-1" />
             </a>
@@ -110,6 +112,7 @@ export default function Home() {
                 return e.preventDefault();
               }}
               target="_blank"
+              aria-label="follow on Facebook"
             >
               <FacebookIcon className="mb-1" />
             </a>
