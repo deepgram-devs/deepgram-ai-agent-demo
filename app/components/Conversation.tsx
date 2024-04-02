@@ -434,10 +434,7 @@ export default function Conversation(): JSX.Element {
                 >
                   <div className="grid grid-cols-12 overflow-x-auto gap-y-2">
                     {initialLoad ? (
-                      <InitialLoad
-                        fn={startConversation}
-                        connecting={!connection}
-                      />
+                      <InitialLoad fn={startConversation} connecting={!connection} />
                     ) : (
                       <>
                         {chatMessages.length > 0 &&
