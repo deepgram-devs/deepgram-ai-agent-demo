@@ -38,9 +38,9 @@ const MessageMeta = ({
     const ttsTotal = foundAudio.networkLatency;
 
     return (
-      <>
+      <div className="flex flex-col">
         <div
-          className={`flex gap-x-2.5 text-xs text-[#BBBBBF] ${className} flex-wrap`}
+          className={`flex gap-x-2.5 pt-1 text-xs text-[#BBBBBF] ${className} flex-wrap`}
         >
           <span>
             <BoltIcon className="w-[1em] h-[1em]" />
@@ -81,7 +81,7 @@ const MessageMeta = ({
             TTS total: {(ttsTotal / 1000).toFixed(1)}s
           </span>
         </div>
-      </>
+      </div>
     );
   }
 };

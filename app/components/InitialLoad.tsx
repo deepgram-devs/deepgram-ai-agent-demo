@@ -1,7 +1,5 @@
-import { ExclamationIcon } from "./icons/ExclamationIcon";
 import { Headphones } from "./Headphones";
-import { isBrowser, isIOS } from "react-device-detect";
-import Image from "next/image";
+import { isBrowser } from "react-device-detect";
 import { Spinner } from "@nextui-org/react";
 
 export const InitialLoad = ({ fn, connecting = true }: { fn: () => void, connecting: boolean }) => {
@@ -27,9 +25,9 @@ export const InitialLoad = ({ fn, connecting = true }: { fn: () => void, connect
             </ul>
           </div>
           <span className="mt-4 block font-semibold">
-            <div className="bg-white text-black rounded px-10 py-3 font-semibold sm:w-fit sm:mx-auto opacity-90">
+            <div className="bg-white text-black rounded px-6 md:px-8 py-3 font-semibold sm:w-fit sm:mx-auto opacity-90">
               {connecting ? (
-                <div className="w-auto h-full items-center flex justify-center opacity-40 cursor-not-allowed">
+                <div className="w-full h-full items-center flex justify-center opacity-40 cursor-not-allowed">
                   <Spinner size={"sm"} className="-mt-1 mr-2" />
                   Connecting...
                 </div>

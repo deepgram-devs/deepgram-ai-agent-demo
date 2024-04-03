@@ -8,6 +8,12 @@ import { SendIcon } from "./icons/SendIcon";
 import { Settings } from "./Settings";
 import { useMicrophone } from "../context/Microphone";
 import { useNowPlaying } from "react-nowplaying";
+import { useSubmit } from "../lib/hooks/useSubmit";
+
+// Better to use library, a lot of complexity is involved
+// in building the resizable input
+import TextareaAutosize from 'react-textarea-autosize';
+
 
 export const Controls = ({
   input,
@@ -21,6 +27,7 @@ export const Controls = ({
   messages: Message[];
 }) => {
   const { startMicrophone, stopMicrophone, microphoneOpen } = useMicrophone();
+  const { formRef, onKeyDown } = useSubmit()
 
   useEffect(() => { 
     startMicrophone();
@@ -46,13 +53,15 @@ export const Controls = ({
     (e: any) => {
       handleSubmit(e);
       stopAudio();
+      e.target.value = '';
+      handleInputChange(e)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps 
     [stopAudio, handleSubmit]
   );
 
   return (
-    <form onSubmit={submitter}>
+    <form onSubmit={submitter} ref={formRef}>
       <div className="relative">
         <div className="absolute w-full -top-[4.5rem] py-4 flex justify-between">
           <Settings />
@@ -70,18 +79,18 @@ export const Controls = ({
               <a
                 href="#"
                 onClick={(e: any) => microphoneToggle(e)}
-                className={`w-20 sm:w-24 py-4 px-2 sm:px-8 rounded-s-full font-bold bg-[#101014] text-light-900 text-sm sm:text-base flex items-center justify-center group`}
+                className={`w-16 md:w-20 sm:w-24 py-2 md:py-4 px-2 h-full sm:px-8 rounded-s-full font-bold bg-[#101014] text-light-900 text-sm sm:text-base flex items-center justify-center group`}
               >
                 {microphoneOpen && (
                   <div className="w-auto items-center justify-center hidden sm:flex absolute shrink-0">
                     <MicrophoneIcon
                       micOpen={microphoneOpen}
-                      className="h-6 animate-ping-short"
+                      className="h-5 md:h-6 animate-ping-short"
                     />
                   </div>
                 )}
                 <div className="w-auto flex items-center justify-center shrink-0">
-                  <MicrophoneIcon micOpen={microphoneOpen} className="h-6" />
+                  <MicrophoneIcon micOpen={microphoneOpen} className="h-5 md:h-6" />
                 </div>
                 {/* <span>
                 {microphoneOpen ? (
@@ -94,24 +103,30 @@ export const Controls = ({
             </Tooltip>
           </span>
 
-          <span className="flex-grow bg-[#13EF93]/50 py-0.5">
-            <input
-              type="text"
-              className="py-4 sm:px-4 w-full h-full bg-[#101014] text-light-900 border-0 text-sm sm:text-base outline-none focus:ring-0"
-              placeholder="Type a message to send..."
-              value={input}
-              onChange={handleInputChange}
-            />
-          </span>
+          <div className="flex-grow bg-[#13EF93]/50 py-0.5 inline">
+            <div className=" bg-[#101014] h-full">
+              <TextareaAutosize
+                onKeyDown={onKeyDown}
+                rows={1}
+                spellCheck={false}
+                autoCorrect="off"
+                className="py-2 md:py-4 -mb-[0.4rem] min-h-10 overflow-hidden sm:px-4 w-full resize-none bg-[#101014] text-light-900 border-0 text-sm sm:text-base outline-none focus:ring-0"
+                placeholder="Send a message"
+                value={input}
+                onChange={handleInputChange}
+              />
+            </div>
 
-          <span className="rounded-e-full bg-gradient-to-l to-[#13EF93]/50 from-[#149AFB]/80 pe-0.5 py-0.5">
+          </div>
+
+          <div className="inline h-auto rounded-e-full bg-gradient-to-l to-[#13EF93]/50 from-[#149AFB]/80 pe-0.5 py-0.5">
             <Tooltip showArrow content="Send a message.">
-              <button className="w-20 sm:w-24 py-4 px-2 sm:px-8 rounded-e-full font-bold bg-[#101014] text-light-900 text-sm sm:text-base flex items-center justify-center">
+              <button type="submit" className="w-16 md:w-20 h-full sm:w-24 py-2 md:py-4 px-2 sm:px-8 rounded-e-full font-bold bg-[#101014] text-light-900 text-sm sm:text-base flex items-center justify-center">
                 {/* <span>Send text</span> */}
-                <SendIcon className="h-6 w-6" />
+                <SendIcon className="h-5 w-5 md:h-6 md:w-6" />
               </button>
             </Tooltip>
-          </span>
+          </div>
         </div>
       </div>
     </form>

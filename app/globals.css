@@ -68,6 +68,13 @@ body {
   @apply leading-normal break-words;
 }
 
+pre {
+  display: grid;
+}
+
+.word-break {
+  word-break: break-word;
+}
 .markdown > * + * {
   @apply my-2;
 }

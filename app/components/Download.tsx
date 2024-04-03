@@ -9,7 +9,7 @@ const DownloadButton = ({ content }: { content: string }) => {
   return (
     <span className="bg-white/10 rounded-full flex">
       <a
-        className={`relative m-px bg-black w-[10.5rem] md:w-10 h-10 rounded-full text-sm p-2.5 group hover:w-[10.5rem] transition-all ease-in-out duration-1000 overflow-hidden whitespace-nowrap`}
+        className={`relative m-px bg-black md:w-[10.5rem] w-10 h-10 rounded-full text-sm p-2.5 group md:hover:w-[10.5rem] transition-all ease-in-out duration-1000 overflow-hidden whitespace-nowrap`}
         download="transcript.txt"
         target="_blank"
         rel="noreferrer"
