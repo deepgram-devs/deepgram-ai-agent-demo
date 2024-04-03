@@ -80,7 +80,7 @@ export default function Home() {
 
                 return e.preventDefault();
               }}
-              aria-label="follow on twitter"
+              aria-label="share on twitter"
               target="_blank"
             >
               <XIcon className="mb-1" />
@@ -96,7 +96,7 @@ export default function Home() {
 
                 return e.preventDefault();
               }}
-              aria-label="follow on Linkedin"
+              aria-label="share on Linkedin"
             >
               <LinkedInIcon className="mb-1" />
             </a>
@@ -112,7 +112,7 @@ export default function Home() {
                 return e.preventDefault();
               }}
               target="_blank"
-              aria-label="follow on Facebook"
+              aria-label="share on Facebook"
             >
               <FacebookIcon className="mb-1" />
             </a>
