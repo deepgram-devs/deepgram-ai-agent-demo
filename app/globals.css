@@ -68,8 +68,8 @@ body {
   @apply leading-normal break-words;
 }
 
-pre {
-  display: grid;
+.pre-overflow-y-auto pre {
+  @apply overflow-y-auto;
 }
 
 .word-break {

@@ -69,7 +69,7 @@ export const Controls = ({
         </div>
         <div className="flex bg-[#101014] rounded-full">
           <span
-            className={`rounded-s-full ps-0.5 py-0.5 ${
+            className={`rounded-tl-md rounded-bl-md ps-0.5 py-0.5 ${
               microphoneOpen
                 ? "bg-gradient-to-r bg-gradient to-[#13EF93]/50 from-red-500"
                 : "bg-gradient-to-r bg-gradient to-[#13EF93]/50 from-[#149AFB]/80"
@@ -79,7 +79,7 @@ export const Controls = ({
               <a
                 href="#"
                 onClick={(e: any) => microphoneToggle(e)}
-                className={`w-16 md:w-20 sm:w-24 py-2 md:py-4 px-2 h-full sm:px-8 rounded-s-full font-bold bg-[#101014] text-light-900 text-sm sm:text-base flex items-center justify-center group`}
+                className={`rounded-tl-md rounded-bl-md w-16 md:w-20 sm:w-24 py-2 md:py-4 px-2 h-full sm:px-8 font-bold bg-[#101014] text-light-900 text-sm sm:text-base flex items-center justify-center group`}
               >
                 {microphoneOpen && (
                   <div className="w-auto items-center justify-center hidden sm:flex absolute shrink-0">
@@ -119,9 +119,9 @@ export const Controls = ({
 
           </div>
 
-          <div className="inline h-auto rounded-e-full bg-gradient-to-l to-[#13EF93]/50 from-[#149AFB]/80 pe-0.5 py-0.5">
+          <div className="inline h-auto rounded-tr-md rounded-br-md bg-gradient-to-l to-[#13EF93]/50 from-[#149AFB]/80 pe-0.5 py-0.5">
             <Tooltip showArrow content="Send a message.">
-              <button type="submit" className="w-16 md:w-20 h-full sm:w-24 py-2 md:py-4 px-2 sm:px-8 rounded-e-full font-bold bg-[#101014] text-light-900 text-sm sm:text-base flex items-center justify-center">
+              <button type="submit" className="w-16 md:w-20 h-full sm:w-24 py-2 md:py-4 px-2 sm:px-8 rounded-tr-md rounded-br-md font-bold bg-[#101014] text-light-900 text-sm sm:text-base flex items-center justify-center">
                 {/* <span>Send text</span> */}
                 <SendIcon className="h-5 w-5 md:h-6 md:w-6" />
               </button>
