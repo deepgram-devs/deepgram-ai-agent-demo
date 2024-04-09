@@ -32,7 +32,11 @@ export async function POST(req: Request) {
           anthropic_version: "bedrock-2023-05-31",
           max_tokens: 600,
           system: systemContent,
-          messages,
+          messages: [
+            // antrhopic doesn't allow the assistant message to be the first message
+            { role: "user", content: "Hi" },
+            ...messages,
+          ],
         }),
       })
     );

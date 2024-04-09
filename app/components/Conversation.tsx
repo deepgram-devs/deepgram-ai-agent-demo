@@ -142,7 +142,7 @@ export default function Conversation(): JSX.Element {
   } = useChat({
     id: "aura",
     api: "/api/brain-bedrock",
-    initialMessages: [{ role: "user", content: "Hi" } as Message, greeting],
+    initialMessages: [greeting],
     onFinish,
     onResponse,
   });
