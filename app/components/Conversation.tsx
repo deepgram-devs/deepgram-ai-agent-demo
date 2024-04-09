@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  CreateProjectKeyResponse,
   LiveClient,
   LiveConnectionState,
   LiveTranscriptionEvent,
@@ -13,7 +12,6 @@ import { ChatBubble } from "./ChatBubble";
 import { Controls } from "./Controls";
 import { InitialLoad } from "./InitialLoad";
 import { RightBubble } from "./RightBubble";
-import { systemContent } from "../lib/constants";
 import { Message, useChat } from "ai/react";
 import { useQueue } from "@uidotdev/usehooks";
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
@@ -127,7 +125,7 @@ export default function Conversation(): JSX.Element {
         id: "welcome",
         role: "assistant",
         content: contextualGreeting(),
-      } as Message),
+      }) as Message,
     []
   );
 
@@ -143,14 +141,8 @@ export default function Conversation(): JSX.Element {
     isLoading: llmLoading,
   } = useChat({
     id: "aura",
-    api: "/api/brain",
-    initialMessages: [
-      {
-        role: "system",
-        content: systemContent,
-      } as Message,
-      greeting,
-    ],
+    api: "/api/brain-bedrock",
+    initialMessages: [{ role: "user", content: "Hi" } as Message, greeting],
     onFinish,
     onResponse,
   });

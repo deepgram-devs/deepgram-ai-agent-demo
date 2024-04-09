@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.549.0",
     "@deepgram/sdk": "^3.2.0-alpha.1",
     "@fullstory/browser": "^2.0.3",
     "@next/third-parties": "^14.1.0",
@@ -18,7 +19,7 @@
     "@types/classnames": "^2.3.1",
     "@types/react-syntax-highlighter": "^15.5.11",
     "@uidotdev/usehooks": "^2.4.1",
-    "ai": "^2.2.33",
+    "ai": "^3.0.20",
     "classnames": "^2.5.1",
     "moment": "^2.30.1",
     "next": "^14.1.3",
