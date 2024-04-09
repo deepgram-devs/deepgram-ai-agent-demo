@@ -22,8 +22,6 @@ export async function POST(req: Request) {
 
   const start = Date.now();
 
-  console.log("messages", messages);
-
   try {
     const response = await client.send(
       new InvokeModelWithResponseStreamCommand({
