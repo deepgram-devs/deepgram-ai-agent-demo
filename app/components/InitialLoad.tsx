@@ -20,7 +20,7 @@ export const InitialLoad = ({ fn }: { fn: () => void }) => {
           <div className="flex justify-center mt-4">
             <ul className="list-disc list-inside marker:text-[#13EF93]">
               <li className="text-center">Nova-2 Speech-to-Text</li>
-              <li className="text-center">Bedrock</li>
+              <li className="text-center">Amazon Bedrock</li>
               <li className="text-center">Aura Text-to-Speech</li>
             </ul>
           </div>
