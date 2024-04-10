@@ -141,7 +141,7 @@ export default function Conversation(): JSX.Element {
     isLoading: llmLoading,
   } = useChat({
     id: "aura",
-    api: "/api/brain-bedrock",
+    api: "/api/brain",
     initialMessages: [greeting],
     onFinish,
     onResponse,
