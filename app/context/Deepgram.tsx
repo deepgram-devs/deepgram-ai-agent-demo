@@ -17,13 +17,13 @@ import {
   useState,
 } from "react";
 import { useToast } from "./Toast";
-import { useLocalStorage } from "../lib/hooks/useLocalStrorage";
+import { useLocalStorage } from "../lib/hooks/useLocalStorage";
 
 type DeepgramContext = {
-  ttsOptions: SpeakSchema | undefined;
-  setTtsOptions: Dispatch<SetStateAction<SpeakSchema>>;
-  sttOptions: LiveSchema | undefined;
-  setSttOptions: Dispatch<SetStateAction<LiveSchema>>;
+  ttsOptions: SpeakSchema;
+  setTtsOptions: (value: SpeakSchema) => void;
+  sttOptions: LiveSchema;
+  setSttOptions: (value: LiveSchema) => void;
   connection: LiveClient | undefined;
   connectionReady: boolean;
 };
@@ -136,10 +136,10 @@ const getApiKey = async (): Promise<string> => {
 
 const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
   const { toast } = useToast();
-  const [ttsOptions, setTtsOptions] = useLocalStorage<LiveSchema>('ttsModel', {
+  const [ttsOptions, setTtsOptions] = useLocalStorage<SpeakSchema>('ttsModel', {
     model: DEFAULT_TTS_MODEL
   });
-  const [sttOptions, setSttOptions] = useLocalStorage('sttModel', {
+  const [sttOptions, setSttOptions] = useLocalStorage<LiveSchema>('sttModel', {
     model: DEFAULT_STT_MODEL,
     interim_results: true,
     smart_format: true,
