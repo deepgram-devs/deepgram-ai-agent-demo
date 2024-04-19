@@ -6,6 +6,7 @@ import {
   LiveSchema,
   LiveTranscriptionEvents,
   SpeakSchema,
+  //createClient, //added this
 } from "@deepgram/sdk";
 import {
   Dispatch,
@@ -17,6 +18,9 @@ import {
   useState,
 } from "react";
 import { useToast } from "./Toast";
+//const express = require("express"); //added this add to dependencies. had to install fs too.
+//const dotenv = require("dotenv"); //added this. need to add dotenv to install requirements
+//dotenv.config();
 
 type DeepgramContext = {
   ttsOptions: SpeakSchema | undefined;
@@ -142,6 +146,16 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
     if (!connection && !connecting) {
       setConnecting(true);
 
+      // const deepgramClient = createClient(process.env.DEEPGRAM_API_KEY);
+      // const connection = deepgramClient.listen.live({
+      //   model: "nova-2",
+      //   interim_results: true,
+      //   smart_format: true,
+      //   endpointing: 550,
+      //   utterance_end_ms: 1500,
+      //   filler_words: true,
+      // });
+      
       const connection = new LiveClient(
         await getApiKey(),
         {},
