@@ -44,6 +44,7 @@ const MicrophoneContextProvider = ({
     first: firstBlob, // firstMicrophoneBlob,
     size: queueSize, // countBlobs,
     queue, // : microphoneBlobs,
+    clear: clearBlobs,
   } = useQueue<Blob>([]);
 
   useEffect(() => {
@@ -116,6 +117,7 @@ const MicrophoneContextProvider = ({
         microphoneOpen,
         enqueueBlob,
         removeBlob,
+        clearBlobs,
         firstBlob,
         queueSize,
         queue,

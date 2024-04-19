@@ -10,7 +10,7 @@ export const LeftBubble = ({ message }: { message: Message }) => {
     <>
       <div className="col-start-1 col-end-13 sm:col-end-11 md:col-end-9 lg:col-end-8 xl:col-end-7 px-3 pt-3">
         <div className="flex items-start gap-2">
-          <div className="h-5 w-12 text-white shrink-0">
+          <div className="h-5 w-12 text-white shrink-0 responsive-hide">
             <AgentAvatar message={message} />
           </div>
           <div className="glass flex p-4 rounded-e-xl rounded-es-xl">

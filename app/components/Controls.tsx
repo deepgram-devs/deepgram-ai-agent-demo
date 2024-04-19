@@ -54,7 +54,7 @@ export const Controls = ({
   return (
     <form onSubmit={submitter}>
       <div className="relative">
-        <div className="absolute w-full -top-[4.5rem] py-4 flex justify-between">
+        <div className="absolute w-full -top-[4.5rem] py-4 flex justify-between responsive-hide">
           <Settings />
           <Download messages={messages} />
         </div>

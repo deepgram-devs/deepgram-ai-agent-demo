@@ -156,7 +156,7 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
       );
 
       setConnection(connection);
-      console.log('connection jelly');
+      console.log('connection established');
       setConnecting(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -164,17 +164,19 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
 
   useEffect(() => {
     // it must be the first open of the page, let's set up the defaults
-    console.log('donuts first page');
+    console.log('first page');
     /**
      * Default TTS Voice when the app loads.
      */
     if (ttsOptions === undefined) {
+      console.log('ttsOptions');
       setTtsOptions({
         model: "aura-asteria-en",
       });
     }
 
     if (!sttOptions === undefined) {
+      console.log('!sttoptions');
       setSttOptions({
         model: "nova-2",
         interim_results: true,
@@ -186,6 +188,7 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
     }
 
     if (connection === undefined) {
+      console.log('undefined connection, then connect');
       connect();
     }
   }, [connect, connection, sttOptions, ttsOptions]);

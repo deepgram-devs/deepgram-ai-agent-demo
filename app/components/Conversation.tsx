@@ -47,7 +47,10 @@ export default function Conversation(): JSX.Element {
     queueSize: microphoneQueueSize,
     firstBlob,
     removeBlob,
+    clearBlobs,
     stream,
+    startMicrophone,
+    stopMicrophone,
   } = useMicrophone();
 
   /**
@@ -73,21 +76,57 @@ export default function Conversation(): JSX.Element {
   /**
    * Request audio from API
    */
+  // const requestTtsAudio = useCallback(
+  //   async (message: Message) => {
+  //     const start = Date.now();
+  //     const model = ttsOptions?.model ?? "aura-asteria-en";
+
+  //     const res = await fetch(`/api/speak?model=${model}`, {
+  //       cache: "no-store",
+  //       method: "POST",
+  //       body: JSON.stringify(message),
+  //     });
+
+  //     const headers = res.headers;
+
+  //     const blob = await res.blob();
+
+  //     startAudio(blob, "audio/mp3", message.id).then(() => {
+  //       addAudio({
+  //         id: message.id,
+  //         blob,
+  //         latency: Number(headers.get("X-DG-Latency")) ?? Date.now() - start,
+  //         networkLatency: Date.now() - start,
+  //         model,
+  //       });
+  //     });
+  //   },
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   [ttsOptions?.model]
+  // );
+
   const requestTtsAudio = useCallback(
     async (message: Message) => {
       const start = Date.now();
       const model = ttsOptions?.model ?? "aura-asteria-en";
-
+  
       const res = await fetch(`/api/speak?model=${model}`, {
         cache: "no-store",
         method: "POST",
         body: JSON.stringify(message),
       });
-
+  
       const headers = res.headers;
-
       const blob = await res.blob();
-
+  
+      // Stop the microphone before playing TTS
+      stopMicrophone();
+      const waiting = setTimeout(() => {
+        clearTimeout(waiting);
+        setProcessing(false);
+      }, 200);
+  
+      // Start playing TTS audio
       startAudio(blob, "audio/mp3", message.id).then(() => {
         addAudio({
           id: message.id,
@@ -96,10 +135,18 @@ export default function Conversation(): JSX.Element {
           networkLatency: Date.now() - start,
           model,
         });
+  
+        // Setup to restart the microphone when audio ends
+        player.onended = () => {
+          const waiting = setTimeout(() => {
+            clearTimeout(waiting);
+            setProcessing(false);
+          }, 500);
+          startMicrophone();
+        };
       });
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [ttsOptions?.model]
+    [ttsOptions?.model, addAudio, startAudio, useMicrophone]
   );
 
   const [llmNewLatency, setLlmNewLatency] = useState<{
@@ -171,24 +218,24 @@ export default function Conversation(): JSX.Element {
      */
     if (!microphoneOpen) return;
 
-    setFailsafeTimeout(
-      setTimeout(() => {
-        if (currentUtterance) {
-          console.log("failsafe fires! pew pew!!");
-          setFailsafeTriggered(true);
-          append({
-            role: "user",
-            content: currentUtterance,
-          });
-          clearTranscriptParts();
-          setCurrentUtterance(undefined);
-        }
-      }, 1500)
-    );
+    // setFailsafeTimeout(
+    //   setTimeout(() => {
+    //     if (currentUtterance) {
+    //       console.log("failsafe fires! pew pew!!");
+    //       setFailsafeTriggered(true);
+    //       append({
+    //         role: "user",
+    //         content: currentUtterance,
+    //       });
+    //       clearTranscriptParts();
+    //       setCurrentUtterance(undefined);
+    //     }
+    //   }, 1500)
+    // );
 
-    return () => {
-      clearTimeout(failsafeTimeout);
-    };
+    // return () => {
+    //   clearTimeout(failsafeTimeout);
+    // };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [microphoneOpen, currentUtterance]);
@@ -204,12 +251,12 @@ export default function Conversation(): JSX.Element {
     /**
      * We we're talking again, we want to wait for a transcript.
      */
-    setFailsafeTriggered(false);
+    // setFailsafeTriggered(false);
 
-    if (!player?.ended) {
-      stopAudio();
-      console.log("barging in! SHH!");
-    }
+    // if (!player?.ended) {
+    //   stopAudio();
+    //   console.log("barging in! SHH!");
+    // }
   };
 
   useMicVAD({
@@ -274,6 +321,7 @@ export default function Conversation(): JSX.Element {
 
   useEffect(() => {
     const onTranscript = (data: LiveTranscriptionEvent) => {
+      console.log('ontranscript');
       let content = utteranceText(data);
 
       // i only want an empty transcript part if it is speech_final
@@ -290,17 +338,17 @@ export default function Conversation(): JSX.Element {
     };
 
     const onOpen = (connection: LiveClient) => {
-      console.log('burrito');
+      console.log('onOpen');
       connection.addListener(LiveTranscriptionEvents.Transcript, onTranscript);
     };
 
     if (connection) {
-      console.log('peanuts');
+      console.log('if connection, add onOpen');
       connection.addListener(LiveTranscriptionEvents.Open, onOpen);
     }
 
     return () => {
-      console.log('socks');
+      console.log('ontranscript cleanup');
       connection?.removeListener(LiveTranscriptionEvents.Open, onOpen);
       connection?.removeListener(
         LiveTranscriptionEvents.Transcript,
@@ -414,6 +462,7 @@ export default function Conversation(): JSX.Element {
   useEffect(() => {
     let keepAlive: any;
     if (connection && connectionReady && !microphoneOpen) {
+      console.log('keep alive');
       keepAlive = setInterval(() => {
         // should stop spamming dev console when working on frontend in devmode
         if (connection?.getReadyState() !== LiveConnectionState.OPEN) {

@@ -148,3 +148,9 @@ body {
 .markdown .highlight pre {
   @apply bg-gray-100 !important;
 }
+
+@media (max-width: 768px) {
+  .responsive-hide {
+    display: none;
+  }
+}
