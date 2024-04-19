@@ -137,13 +137,18 @@ export default function Conversation(): JSX.Element {
         });
   
         // Setup to restart the microphone when audio ends
-        player.onended = () => {
-          const waiting = setTimeout(() => {
-            clearTimeout(waiting);
-            setProcessing(false);
-          }, 500);
-          startMicrophone();
-        };
+        if(player){
+          player.onended = () => {
+            const waiting = setTimeout(() => {
+              clearTimeout(waiting);
+              setProcessing(false);
+            }, 500);
+            startMicrophone();
+          };
+        } else {
+          console.error('Player is undefined');
+        }
+
       });
     },
     [ttsOptions?.model, addAudio, startAudio, useMicrophone]
