@@ -30,71 +30,7 @@ export const InitialLoad = ({ fn, connecting = true }: { fn: () => void, connect
                 <>{isBrowser ? "Click" : "Tap"} here to start</>
               )}
             </div>
-          </span>
-          <span className="mt-4 block font-semibold">
-            <div className="bg-white text-black rounded px-10 py-3 font-semibold sm:w-fit sm:mx-auto opacity-90">
-              {connecting ? (
-                <div className="w-auto h-full items-center flex justify-center opacity-40 cursor-not-allowed">
-                  <Spinner size={"sm"} className="-mt-1 mr-2" />
-                  Connecting...
-                </div>
-              ) : (
-                <>{isBrowser ? "Click" : "Tap"} here to start</>
-              )}
-            </div>
-          </span>
-          <span className="mt-4 block font-semibold">
-            <div className="bg-white text-black rounded px-10 py-3 font-semibold sm:w-fit sm:mx-auto opacity-90">
-              {connecting ? (
-                <div className="w-auto h-full items-center flex justify-center opacity-40 cursor-not-allowed">
-                  <Spinner size={"sm"} className="-mt-1 mr-2" />
-                  Connecting...
-                </div>
-              ) : (
-                <>{isBrowser ? "Click" : "Tap"} here to start</>
-              )}
-            </div>
-          </span>
-          <span className="mt-4 block font-semibold">
-            <div className="bg-white text-black rounded px-10 py-3 font-semibold sm:w-fit sm:mx-auto opacity-90">
-              {connecting ? (
-                <div className="w-auto h-full items-center flex justify-center opacity-40 cursor-not-allowed">
-                  <Spinner size={"sm"} className="-mt-1 mr-2" />
-                  Connecting...
-                </div>
-              ) : (
-                <>{isBrowser ? "Click" : "Tap"} here to start</>
-              )}
-            </div>
-          </span>
-          <span className="mt-4 block font-semibold">
-            <div className="bg-white text-black rounded px-10 py-3 font-semibold sm:w-fit sm:mx-auto opacity-90">
-              {connecting ? (
-                <div className="w-auto h-full items-center flex justify-center opacity-40 cursor-not-allowed">
-                  <Spinner size={"sm"} className="-mt-1 mr-2" />
-                  Connecting...
-                </div>
-              ) : (
-                <>{isBrowser ? "Click" : "Tap"} here to start</>
-              )}
-            </div>
-          </span>
-          <span className="mt-4 block font-semibold">
-            <div className="bg-white text-black rounded px-10 py-3 font-semibold sm:w-fit sm:mx-auto opacity-90">
-              {connecting ? (
-                <div className="w-auto h-full items-center flex justify-center opacity-40 cursor-not-allowed">
-                  <Spinner size={"sm"} className="-mt-1 mr-2" />
-                  Connecting...
-                </div>
-              ) : (
-                <>{isBrowser ? "Click" : "Tap"} here to start</>
-              )}
-            </div>
-          </span>
-          <span className="mt-4 block text-sm text-gray-100/70">
-            <Headphones /> For optimal enjoyment, we recommend using headphones
-            while using this application. 
-          </span>
+          </span>>
         </button>
       </div>
     </>

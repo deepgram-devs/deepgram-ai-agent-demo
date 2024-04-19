@@ -6,7 +6,7 @@ import {
   LiveSchema,
   LiveTranscriptionEvents,
   SpeakSchema,
-  //createClient, //added this
+  createClient, //added this
 } from "@deepgram/sdk";
 import {
   Dispatch,
@@ -146,31 +146,51 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
     if (!connection && !connecting) {
       setConnecting(true);
 
-      // const deepgramClient = createClient(process.env.DEEPGRAM_API_KEY);
-      // const connection = deepgramClient.listen.live({
-      //   model: "nova-2",
-      //   interim_results: true,
-      //   smart_format: true,
-      //   endpointing: 550,
-      //   utterance_end_ms: 1500,
-      //   filler_words: true,
-      // });
-      
-      const connection = new LiveClient(
-        await getApiKey(),
-        {},
-        {
-          model: "nova-2",
-          interim_results: true,
-          smart_format: true,
-          endpointing: 550,
-          utterance_end_ms: 1500,
-          filler_words: true,
-        }
-      );
+      const url = 'https://api.deepgram.com/v1/listen'; // Changed from wss to https for the purpose of an OPTIONS request
 
+      const fetchOptions = {
+      method: 'OPTIONS',
+      headers: {
+        'Access-Control-Request-Method': 'GET', // Typically, WebSocket connections are GET requests
+        'Origin': 'http://yourdomain.com', // This should be the origin of your client application
+        // Add other headers as needed
+      }
+      };
+
+      fetch(url, fetchOptions)
+      .then(response => response.json())
+      .then(data => {
+        console.log('OPTIONS request response:', data);
+      })
+      .catch(error => {
+        console.error('Error making OPTIONS request:', error);
+      });
+     
+      const deepgramClient = createClient(await getApiKey());
+      const connection = deepgramClient.listen.live({
+        model: "nova-2",
+        interim_results: true,
+        smart_format: true,
+        endpointing: 550,
+        utterance_end_ms: 1500,
+        filler_words: true,
+      });
+      
+      // const connection = new LiveClient(
+      //   await getApiKey(),
+      //   {},
+      //   {
+      //     model: "nova-2",
+      //     interim_results: true,
+      //     smart_format: true,
+      //     endpointing: 550,
+      //     utterance_end_ms: 1500,
+      //     filler_words: true,
+      //   }
+      // );
+
+      console.log('first connection');
       setConnection(connection);
-      console.log('connection established');
       setConnecting(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -224,7 +244,7 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
 
       connection.addListener(LiveTranscriptionEvents.Error, (err) => {
         toast(
-          "An unknown error occured. We'll attempt to reconnect to Deepgram. HELLLLLLO" 
+          "An unknown error occured. We'll attempt to reconnect to Deepgram." 
         );
         console.error(err);
         setConnectionReady(false);
