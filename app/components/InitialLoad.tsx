@@ -24,13 +24,13 @@ export const InitialLoad = ({ fn, connecting = true }: { fn: () => void, connect
               {connecting ? (
                 <div className="w-auto h-full items-center flex justify-center opacity-40 cursor-not-allowed">
                   <Spinner size={"sm"} className="-mt-1 mr-2" />
-                  Connecting...
+                  Connecting..
                 </div>
               ) : (
                 <>{isBrowser ? "Click" : "Tap"} here to start</>
               )}
             </div>
-          </span>>
+          </span>
         </button>
       </div>
     </>
