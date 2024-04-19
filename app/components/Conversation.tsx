@@ -104,6 +104,7 @@ export default function Conversation(): JSX.Element {
   //   [ttsOptions?.model]
   // );
 
+  //starts and stops microphone while playing tts
   const requestTtsAudio = useCallback(
     async (message: Message) => {
       const start = Date.now();
