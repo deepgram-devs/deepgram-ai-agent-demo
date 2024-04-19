@@ -47,7 +47,6 @@ export default function Conversation(): JSX.Element {
     queueSize: microphoneQueueSize,
     firstBlob,
     removeBlob,
-    clearBlobs,
     stream,
     startMicrophone,
     stopMicrophone,
