@@ -156,6 +156,7 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
       );
 
       setConnection(connection);
+      console.log('connection jelly');
       setConnecting(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -163,7 +164,7 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
 
   useEffect(() => {
     // it must be the first open of the page, let's set up the defaults
-
+    console.log('donuts first page');
     /**
      * Default TTS Voice when the app loads.
      */
@@ -193,6 +194,7 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
     if (connection && connection?.getReadyState() !== undefined) {
       connection.addListener(LiveTranscriptionEvents.Open, () => {
         setConnectionReady(true);
+        console.log('connected');
       });
 
       connection.addListener(LiveTranscriptionEvents.Close, () => {
@@ -200,12 +202,14 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
         setConnectionReady(false);
         connection.removeAllListeners();
         setConnection(undefined);
+        console.log('closed');
       });
 
-      connection.addListener(LiveTranscriptionEvents.Error, () => {
+      connection.addListener(LiveTranscriptionEvents.Error, (err) => {
         toast(
-          "An unknown error occured. We'll attempt to reconnect to Deepgram."
+          "An unknown error occured. We'll attempt to reconnect to Deepgram. HELLLLLLO" 
         );
+        console.error(err);
         setConnectionReady(false);
         connection.removeAllListeners();
         setConnection(undefined);

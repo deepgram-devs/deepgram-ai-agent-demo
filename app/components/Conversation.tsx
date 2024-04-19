@@ -290,14 +290,17 @@ export default function Conversation(): JSX.Element {
     };
 
     const onOpen = (connection: LiveClient) => {
+      console.log('burrito');
       connection.addListener(LiveTranscriptionEvents.Transcript, onTranscript);
     };
 
     if (connection) {
+      console.log('peanuts');
       connection.addListener(LiveTranscriptionEvents.Open, onOpen);
     }
 
     return () => {
+      console.log('socks');
       connection?.removeListener(LiveTranscriptionEvents.Open, onOpen);
       connection?.removeListener(
         LiveTranscriptionEvents.Transcript,
