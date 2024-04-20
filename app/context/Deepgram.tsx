@@ -6,7 +6,7 @@ import {
   LiveSchema,
   LiveTranscriptionEvents,
   SpeakSchema,
-  createClient, //added this
+  //createClient, //added this
 } from "@deepgram/sdk";
 import {
   Dispatch,
@@ -16,6 +16,7 @@ import {
   useContext,
   useEffect,
   useState,
+  useRef, //addedthis
 } from "react";
 import { useToast } from "./Toast";
 //const express = require("express"); //added this add to dependencies. had to install fs too.
@@ -127,6 +128,7 @@ const voiceMap = (model: string) => {
 };
 
 const getApiKey = async (): Promise<string> => {
+  console.log('getting a new api key');
   const result: CreateProjectKeyResponse = await (
     await fetch("/api/authenticate", { cache: "no-store" })
   ).json();
@@ -141,41 +143,51 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
   const [connection, setConnection] = useState<LiveClient>();
   const [connecting, setConnecting] = useState<boolean>(false);
   const [connectionReady, setConnectionReady] = useState<boolean>(false);
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false; // Set to false when the component unmounts
+    };
+  }, []);
 
   const connect = useCallback(async () => {
-    if (!connection && !connecting) {
+    if (!connection && !connecting && isMounted.current) {
       setConnecting(true);
-
-      const url = 'https://api.deepgram.com/v1/listen'; // Changed from wss to https for the purpose of an OPTIONS request
-
-      const fetchOptions = {
-      method: 'OPTIONS',
-      headers: {
-        'Access-Control-Request-Method': 'GET', // Typically, WebSocket connections are GET requests
-        'Origin': 'http://yourdomain.com', // This should be the origin of your client application
-        // Add other headers as needed
-      }
-      };
-
-      fetch(url, fetchOptions)
-      .then(response => response.json())
-      .then(data => {
-        console.log('OPTIONS request response:', data);
-      })
-      .catch(error => {
-        console.error('Error making OPTIONS request:', error);
-      });
      
-      const deepgramClient = createClient(await getApiKey());
-      const connection = deepgramClient.listen.live({
-        model: "nova-2",
-        interim_results: true,
-        smart_format: true,
-        endpointing: 550,
-        utterance_end_ms: 1500,
-        filler_words: true,
-      });
-      
+      // const deepgramClient = createClient(await getApiKey());
+      // const connection = deepgramClient.listen.live({
+      //   model: "nova-2",
+      //   interim_results: true,
+      //   smart_format: true,
+      //   endpointing: 550,
+      //   utterance_end_ms: 1500,
+      //   filler_words: true,
+      // });
+      try {
+        const apiKey = await getApiKey();
+        const connection = new LiveClient(apiKey, {}, 
+          {
+            model: "nova-2",
+            interim_results: true,
+            smart_format: true,
+            endpointing: 550,
+            utterance_end_ms: 1500,
+            filler_words: true,
+          });
+
+        if (isMounted.current){
+          console.log('connected');
+          setConnection(connection);
+          setConnecting(false);
+        }
+      } catch (error) {
+        console.error('Error establishing connection:', error);
+        toast("Failed to establish connection due to an error.");
+        if (isMounted.current){
+          setConnecting(false);
+        }
+      }      
       // const connection = new LiveClient(
       //   await getApiKey(),
       //   {},
@@ -189,16 +201,15 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
       //   }
       // );
 
-      console.log('first connection');
-      setConnection(connection);
-      setConnecting(false);
+      // console.log('first connection');
+      // setConnection(connection);
+      // setConnecting(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connecting, connection]);
 
   useEffect(() => {
     // it must be the first open of the page, let's set up the defaults
-    console.log('first page');
     /**
      * Default TTS Voice when the app loads.
      */
@@ -209,14 +220,14 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
       });
     }
 
-    if (!sttOptions === undefined) {
+    if (sttOptions === undefined) {
       console.log('!sttoptions');
       setSttOptions({
         model: "nova-2",
         interim_results: true,
         smart_format: true,
-        endpointing: 350,
-        utterance_end_ms: 1000,
+        endpointing: 550,
+        utterance_end_ms: 1500,
         filler_words: true,
       });
     }
@@ -228,36 +239,72 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
   }, [connect, connection, sttOptions, ttsOptions]);
 
   useEffect(() => {
-    if (connection && connection?.getReadyState() !== undefined) {
-      connection.addListener(LiveTranscriptionEvents.Open, () => {
+    // Add listeners only if the connection is ready
+    if (connection) {
+      const handleOpen = () => {
         setConnectionReady(true);
         console.log('connected');
-      });
-
-      connection.addListener(LiveTranscriptionEvents.Close, () => {
+      };
+  
+      const handleClose = () => {
         toast("The connection to Deepgram closed, we'll attempt to reconnect.");
         setConnectionReady(false);
-        connection.removeAllListeners();
-        setConnection(undefined);
         console.log('closed');
-      });
-
-      connection.addListener(LiveTranscriptionEvents.Error, (err) => {
-        toast(
-          "An unknown error occured. We'll attempt to reconnect to Deepgram." 
-        );
-        console.error(err);
+      };
+  
+      const handleError = (err) => {
+        toast("An unknown error occurred. We'll attempt to reconnect to Deepgram.");
         setConnectionReady(false);
-        connection.removeAllListeners();
         setConnection(undefined);
-      });
+      };
+  
+      connection.addListener(LiveTranscriptionEvents.Open, handleOpen);
+      connection.addListener(LiveTranscriptionEvents.Close, handleClose);
+      connection.addListener(LiveTranscriptionEvents.Error, handleError);
+  
+      // Return a cleanup function
+      return () => {
+        connection.removeListener(LiveTranscriptionEvents.Open, handleOpen);
+        connection.removeListener(LiveTranscriptionEvents.Close, handleClose);
+        connection.removeListener(LiveTranscriptionEvents.Error, handleError);
+        if (connection.getReadyState() !== undefined) {
+          setConnectionReady(false);
+        }
+      };
     }
-
-    return () => {
-      setConnectionReady(false);
-      connection?.removeAllListeners();
-    };
   }, [connection, toast]);
+
+  // useEffect(() => {
+  //   if (connection && connection?.getReadyState() !== undefined) {
+  //     connection.addListener(LiveTranscriptionEvents.Open, () => {
+  //       setConnectionReady(true);
+  //       console.log('connected');
+  //     });
+
+  //     connection.addListener(LiveTranscriptionEvents.Close, () => {
+  //       toast("The connection to Deepgram closed, we'll attempt to reconnect.");
+  //       setConnectionReady(false);
+  //       connection.removeAllListeners();
+  //       setConnection(undefined);
+  //       console.log('closed');
+  //     });
+
+  //     connection.addListener(LiveTranscriptionEvents.Error, (err) => {
+  //       toast(
+  //         "An unknown error occured. We'll attempt to reconnect to Deepgram." 
+  //       );
+  //       console.error(err);
+  //       setConnectionReady(false);
+  //       connection.removeAllListeners();
+  //       setConnection(undefined);
+  //     });
+  //   }
+
+  //   return () => {
+  //     setConnectionReady(false);
+  //     connection?.removeAllListeners();
+  //   };
+  // }, [connection, toast]);
 
   return (
     <DeepgramContext.Provider
