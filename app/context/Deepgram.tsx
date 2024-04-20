@@ -194,11 +194,13 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
           filler_words: true,
         });
         if (isMounted.current) {
+          console.log('isMounted true set connection');
           dispatch({ type: 'SET_CONNECTION', payload: connection });
         }
       } catch (error) {
         console.error('Error establishing connection:', error);
         if (isMounted.current) {
+          console.log('isMounted true set connecting');
           dispatch({ type: 'SET_CONNECTING', payload: false });
         }
       }
@@ -207,6 +209,7 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
 
   useEffect(() => {
     return () => {
+      console.log('isMounted false');
       isMounted.current = false;
     };
   }, []);
@@ -254,11 +257,9 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
       state.connection.addListener(LiveTranscriptionEvents.Error, handleError);
 
       return () => {
-        if (state.connection) {
-          state.connection.removeListener(LiveTranscriptionEvents.Open, handleOpen);
-          state.connection.removeListener(LiveTranscriptionEvents.Close, handleClose);
-          state.connection.removeListener(LiveTranscriptionEvents.Error, handleError);
-        }
+          state.connection?.removeListener(LiveTranscriptionEvents.Open, handleOpen);
+          state.connection?.removeListener(LiveTranscriptionEvents.Close, handleClose);
+          state.connection?.removeListener(LiveTranscriptionEvents.Error, handleError);
       };
     }
   }, [state.connection, toast]);
