@@ -11,7 +11,7 @@ import { NextUIProvider } from "@nextui-org/react";
 import { useMicVAD } from "@ricky0123/vad-react";
 import { useNowPlaying } from "react-nowplaying";
 import { useQueue } from "@uidotdev/usehooks";
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo, useContext } from "react";
 
 import { ChatBubble } from "./ChatBubble";
 import {
@@ -34,10 +34,7 @@ import { useAudioStore } from "../context/AudioStore";
  * @returns {JSX.Element}
  */
 export default function Conversation(): JSX.Element {
-  /**
-   * Custom context providers
-   */
-  const { ttsOptions, connection, connectionReady } = useDeepgram();
+  const { state, dispatch } = useDeepgram();
   const { addAudio } = useAudioStore();
   const { player, stop: stopAudio, play: startAudio } = useNowPlaying();
   const { addMessageData } = useMessageData();
@@ -75,58 +72,26 @@ export default function Conversation(): JSX.Element {
   /**
    * Request audio from API
    */
-  // const requestTtsAudio = useCallback(
-  //   async (message: Message) => {
-  //     const start = Date.now();
-  //     const model = ttsOptions?.model ?? "aura-asteria-en";
-
-  //     const res = await fetch(`/api/speak?model=${model}`, {
-  //       cache: "no-store",
-  //       method: "POST",
-  //       body: JSON.stringify(message),
-  //     });
-
-  //     const headers = res.headers;
-
-  //     const blob = await res.blob();
-
-  //     startAudio(blob, "audio/mp3", message.id).then(() => {
-  //       addAudio({
-  //         id: message.id,
-  //         blob,
-  //         latency: Number(headers.get("X-DG-Latency")) ?? Date.now() - start,
-  //         networkLatency: Date.now() - start,
-  //         model,
-  //       });
-  //     });
-  //   },
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   [ttsOptions?.model]
-  // );
-
-  //starts and stops microphone while playing tts
   const requestTtsAudio = useCallback(
     async (message: Message) => {
       const start = Date.now();
-      const model = ttsOptions?.model ?? "aura-asteria-en";
-  
+      const model = state.ttsOptions?.model ?? "aura-asteria-en";
+
       const res = await fetch(`/api/speak?model=${model}`, {
         cache: "no-store",
         method: "POST",
         body: JSON.stringify(message),
       });
-  
+
       const headers = res.headers;
       const blob = await res.blob();
-  
-      // Stop the microphone before playing TTS
+
       stopMicrophone();
       const waiting = setTimeout(() => {
         clearTimeout(waiting);
         setProcessing(false);
       }, 200);
-  
-      // Start playing TTS audio
+
       startAudio(blob, "audio/mp3", message.id).then(() => {
         addAudio({
           id: message.id,
@@ -135,9 +100,8 @@ export default function Conversation(): JSX.Element {
           networkLatency: Date.now() - start,
           model,
         });
-  
-        // Setup to restart the microphone when audio ends
-        if(player){
+
+        if (player) {
           player.onended = () => {
             const waiting = setTimeout(() => {
               clearTimeout(waiting);
@@ -148,16 +112,10 @@ export default function Conversation(): JSX.Element {
         } else {
           console.error('Player is undefined');
         }
-
       });
     },
-    [ttsOptions?.model, addAudio, startAudio, useMicrophone]
+    [state.ttsOptions?.model, addAudio, startAudio, stopMicrophone, startMicrophone, player]
   );
-
-  const [llmNewLatency, setLlmNewLatency] = useState<{
-    start: number;
-    response: number;
-  }>();
 
   const onFinish = useCallback(
     (msg: any) => {
@@ -168,12 +126,11 @@ export default function Conversation(): JSX.Element {
 
   const onResponse = useCallback((res: Response) => {
     (async () => {
-      setLlmNewLatency({
-        start: Number(res.headers.get("x-llm-start")),
-        response: Number(res.headers.get("x-llm-response")),
-      });
+      const start = Number(res.headers.get("x-llm-start"));
+      const response = Number(res.headers.get("x-llm-response"));
+      dispatch({ type: 'SET_LLM_LATENCY', payload: { start, response } });
     })();
-  }, []);
+  }, [dispatch]);
 
   const systemMessage: Message = useMemo(
     () => ({
@@ -223,24 +180,24 @@ export default function Conversation(): JSX.Element {
      */
     if (!microphoneOpen) return;
 
-    // setFailsafeTimeout(
-    //   setTimeout(() => {
-    //     if (currentUtterance) {
-    //       console.log("failsafe fires! pew pew!!");
-    //       setFailsafeTriggered(true);
-    //       append({
-    //         role: "user",
-    //         content: currentUtterance,
-    //       });
-    //       clearTranscriptParts();
-    //       setCurrentUtterance(undefined);
-    //     }
-    //   }, 1500)
-    // );
+    setFailsafeTimeout(
+      setTimeout(() => {
+        if (currentUtterance) {
+          console.log("failsafe fires! pew pew!!");
+          setFailsafeTriggered(true);
+          append({
+            role: "user",
+            content: currentUtterance,
+          });
+          clearTranscriptParts();
+          setCurrentUtterance(undefined);
+        }
+      }, 1500)
+    );
 
-    // return () => {
-    //   clearTimeout(failsafeTimeout);
-    // };
+    return () => {
+      clearTimeout(failsafeTimeout);
+    };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [microphoneOpen, currentUtterance]);
@@ -256,12 +213,12 @@ export default function Conversation(): JSX.Element {
     /**
      * We we're talking again, we want to wait for a transcript.
      */
-    // setFailsafeTriggered(false);
+    setFailsafeTriggered(false);
 
-    // if (!player?.ended) {
-    //   stopAudio();
-    //   console.log("barging in! SHH!");
-    // }
+    if (!player?.ended) {
+      stopAudio();
+      console.log("barging in! SHH!");
+    }
   };
 
   useMicVAD({
@@ -275,23 +232,22 @@ export default function Conversation(): JSX.Element {
 
   useEffect(() => {
     if (llmLoading) return;
-    if (!llmNewLatency) return;
+    if (!state.llmLatency) return;
 
     const latestLlmMessage: MessageMetadata = {
       ...chatMessages[chatMessages.length - 1],
-      ...llmNewLatency,
+      ...state.llmLatency,
       end: Date.now(),
-      ttsModel: ttsOptions?.model,
+      ttsModel: state.ttsOptions?.model,
     };
 
     addMessageData(latestLlmMessage);
   }, [
     chatMessages,
-    llmNewLatency,
-    setLlmNewLatency,
+    state.llmLatency,  // Update dependency to use state from context
     llmLoading,
     addMessageData,
-    ttsOptions?.model,
+    state.ttsOptions?.model,  // Update dependency to use state from context
   ]);
 
   /**
@@ -309,7 +265,7 @@ export default function Conversation(): JSX.Element {
     // add a stub message data with no latency
     const welcomeMetadata: MessageMetadata = {
       ...greetingMessage,
-      ttsModel: ttsOptions?.model,
+      ttsModel: state.ttsOptions?.model,
     };
 
     addMessageData(welcomeMetadata);
@@ -321,46 +277,38 @@ export default function Conversation(): JSX.Element {
     greetingMessage,
     initialLoad,
     requestWelcomeAudio,
-    ttsOptions?.model,
+    state.ttsOptions?.model,
   ]);
 
-  useEffect(() => {
-    const onTranscript = (data: LiveTranscriptionEvent) => {
-      console.log('ontranscript');
-      let content = utteranceText(data);
+  const onTranscript = useCallback((data: LiveTranscriptionEvent) => {
+    console.log('ontranscript');
+    let content = utteranceText(data);
 
-      // i only want an empty transcript part if it is speech_final
-      if (content !== "" || data.speech_final) {
-        /**
-         * use an outbound message queue to build up the unsent utterance
-         */
-        addTranscriptPart({
-          is_final: data.is_final as boolean,
-          speech_final: data.speech_final as boolean,
-          text: content,
-        });
-      }
-    };
-
-    const onOpen = (connection: LiveClient) => {
-      console.log('onOpen');
-      connection.addListener(LiveTranscriptionEvents.Transcript, onTranscript);
-    };
-
-    if (connection) {
-      console.log('if connection, add onOpen');
-      connection.addListener(LiveTranscriptionEvents.Open, onOpen);
+    if (content !== "" || data.speech_final) {
+      addTranscriptPart({
+        is_final: data.is_final as boolean,
+        speech_final: data.speech_final as boolean,
+        text: content,
+      });
     }
+  }, [addTranscriptPart]);
 
-    return () => {
-      console.log('ontranscript cleanup');
-      connection?.removeListener(LiveTranscriptionEvents.Open, onOpen);
-      connection?.removeListener(
-        LiveTranscriptionEvents.Transcript,
-        onTranscript
-      );
+  useEffect(() => {
+    const onOpen = () => {
+      console.log('onOpen');
+      state.connection?.addListener(LiveTranscriptionEvents.Transcript, onTranscript);
     };
-  }, [addTranscriptPart, connection]);
+
+    if (state.connection) {
+      console.log('if connection, add onOpen');
+      state.connection.addListener(LiveTranscriptionEvents.Open, onOpen);
+      return () => {
+        console.log('cleanup onOpen');
+        state.connection?.removeListener(LiveTranscriptionEvents.Open, onOpen);
+        state.connection?.removeListener(LiveTranscriptionEvents.Transcript, onTranscript);
+      };
+    }
+  }, [state.connection, onTranscript]);
 
   const getCurrentUtterance = useCallback(() => {
     return transcriptParts.filter(({ is_final, speech_final }, i, arr) => {
@@ -433,11 +381,11 @@ export default function Conversation(): JSX.Element {
       if (microphoneQueueSize > 0 && !isProcessing) {
         setProcessing(true);
 
-        if (connectionReady) {
+        if (state.connectionReady) {  // Use connectionReady from state
           const nextBlob = firstBlob;
 
           if (nextBlob && nextBlob?.size > 0) {
-            connection?.send(nextBlob);
+            state.connection?.send(nextBlob);  // Use connection from state
           }
 
           removeBlob();
@@ -452,39 +400,39 @@ export default function Conversation(): JSX.Element {
 
     processQueue();
   }, [
-    connection,
-    microphoneQueue,
-    removeBlob,
+    state.connection,  // Use connection from state
+    state.connectionReady,  // Use connectionReady from state
     firstBlob,
     microphoneQueueSize,
     isProcessing,
-    connectionReady,
+    removeBlob,
   ]);
 
   /**
    * keep deepgram connection alive when mic closed
    */
   useEffect(() => {
-    let keepAlive: any;
-    if (connection && connectionReady && !microphoneOpen) {
-      console.log('keep alive');
+    let keepAlive: NodeJS.Timeout | null = null;
+    
+    if (state.connection && state.connectionReady && !microphoneOpen) {
       keepAlive = setInterval(() => {
         // should stop spamming dev console when working on frontend in devmode
-        if (connection?.getReadyState() !== LiveConnectionState.OPEN) {
-          clearInterval(keepAlive);
+        if (state.connection.getReadyState() !== LiveConnectionState.OPEN) {
+          if (keepAlive) clearInterval(keepAlive);
         } else {
-          connection.keepAlive();
+          state.connection.keepAlive();
         }
       }, 10000);
     } else {
-      clearInterval(keepAlive);
+      if (keepAlive) clearInterval(keepAlive);
     }
 
     // prevent duplicate timeouts
     return () => {
-      clearInterval(keepAlive);
+      if (keepAlive) clearInterval(keepAlive);
     };
-  }, [connection, connectionReady, microphoneOpen]);
+  }, [state.connection, state.connectionReady, microphoneOpen]);
+
 
   // this works
   useEffect(() => {
@@ -494,6 +442,22 @@ export default function Conversation(): JSX.Element {
       });
     }
   }, [chatMessages]);
+
+  interface InitialLoadProps {
+    fn: () => void;
+    connecting: boolean; // Define that this component also expects a boolean 'connecting' prop
+  }
+  
+  const InitialLoad: React.FC<InitialLoadProps> = ({ fn, connecting }) => {
+    // Implementation of the component
+    return (
+      <div>
+        {/* Display something based on 'connecting' */}
+        {connecting ? "Connecting..." : "Ready to Start"}
+        <button onClick={fn}>Start</button>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -508,13 +472,13 @@ export default function Conversation(): JSX.Element {
                   }`}
                 >
                   <div className="grid grid-cols-12 overflow-x-auto gap-y-2">
-                    {initialLoad ? (
-                      <InitialLoad
-                        fn={startConversation}
-                        connecting={!connection}
-                      />
-                    ) : (
-                      <>
+                  {initialLoad ? (
+                    <InitialLoad
+                      fn={startConversation}
+                      connecting={state.connectionReady === false} // Pass 'connectionReady' as the opposite of 'connecting'
+                    />
+                  ) : (
+                    <>
                         {chatMessages.length > 0 &&
                           chatMessages.map((message, i) => (
                             <ChatBubble message={message} key={i} />

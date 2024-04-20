@@ -3,8 +3,12 @@ import { Headphones } from "./Headphones";
 import { isBrowser, isIOS } from "react-device-detect";
 import Image from "next/image";
 import { Spinner } from "@nextui-org/react";
+import { useDeepgram } from "../context/Deepgram"; // Ensure the path matches where your context is defined
 
-export const InitialLoad = ({ fn, connecting = true }: { fn: () => void, connecting: boolean }) => {
+export const InitialLoad = ({ fn }: { fn: () => void }) => {
+  const { state } = useDeepgram();  // Using context to get the current state
+  const connecting = state.connecting;  // Assuming `connecting` is managed in the state
+
   return (
     <>
       <div className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 md:col-start-3 md:col-end-11 lg:col-start-4 lg:col-end-10 p-3 mb-1/2">
@@ -24,7 +28,7 @@ export const InitialLoad = ({ fn, connecting = true }: { fn: () => void, connect
               {connecting ? (
                 <div className="w-auto h-full items-center flex justify-center opacity-40 cursor-not-allowed">
                   <Spinner size={"sm"} className="-mt-1 mr-2" />
-                  Connecting..
+                  Connecting...
                 </div>
               ) : (
                 <>{isBrowser ? "Click" : "Tap"} here to start</>
