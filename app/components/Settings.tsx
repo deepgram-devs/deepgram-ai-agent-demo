@@ -1,18 +1,7 @@
+import React, { useContext, useState, Dispatch, SetStateAction } from 'react';
 import { CogIcon } from "./icons/CogIcon";
-import {
-  Avatar,
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  Select,
-  SelectItem,
-  useDisclosure,
-} from "@nextui-org/react";
-import { useDeepgram, voiceMap, voices } from "../context/Deepgram";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Avatar, Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, useDisclosure } from "@nextui-org/react";
+import { DeepgramContext, voiceMap, voices } from "../context/Deepgram";
 import { useToast } from "../context/Toast";
 
 const arrayOfVoices = Object.entries(voices).map((e) => ({
@@ -20,13 +9,14 @@ const arrayOfVoices = Object.entries(voices).map((e) => ({
   model: e[0],
 }));
 
-const ModelSelection = ({
-  model,
-  setModel,
-}: {
+// Define the props interface
+interface ModelSelectionProps {
   model: string;
   setModel: Dispatch<SetStateAction<string>>;
-}) => {
+}
+
+const ModelSelection: React.FC<ModelSelectionProps> = ({ model, setModel }) => {
+
   return (
     <Select
       defaultSelectedKeys={["aura-model-asteria"]}
@@ -106,11 +96,21 @@ const ModelSelection = ({
 };
 
 export const Settings = () => {
+  const { state, dispatch } = useContext(DeepgramContext);
+  const { ttsOptions } = state;
   const { toast } = useToast();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const { ttsOptions, setTtsOptions } = useDeepgram();
+  const [model, setModel] = useState(ttsOptions?.model);
 
-  const [model, setModel] = useState<string>(ttsOptions?.model as string);
+  const saveAndClose = (onClose: () => void) => {
+    dispatch({
+      type: 'SET_TTS_OPTIONS',
+      payload: { ...ttsOptions, model }
+    });
+
+    toast("Options saved.");
+    onClose();
+  };
 
   return (
     <>
@@ -138,34 +138,24 @@ export const Settings = () => {
         backdrop="blur"
         className="glass"
       >
-        <ModalContent>
-          {(onClose) => {
-            const saveAndClose = () => {
-              setTtsOptions({ ...ttsOptions, model });
-
-              toast("Options saved.");
-
-              onClose();
-            };
-
-            return (
-              <>
-                <ModalHeader className="flex flex-col gap-1">
-                  Settings
-                </ModalHeader>
-                <ModalBody>
-                  <h2>Text-to-Speech Settings</h2>
-                  <ModelSelection model={model} setModel={setModel} />
-                </ModalBody>
-                <ModalFooter>
-                  <Button color="primary" onPress={saveAndClose}>
-                    Save
-                  </Button>
-                </ModalFooter>
-              </>
-            );
-          }}
-        </ModalContent>
+    <ModalContent>
+      {onClose => (
+        <>
+          <ModalHeader className="flex flex-col gap-1">
+            Settings
+          </ModalHeader>
+          <ModalBody>
+            <h2>Text-to-Speech Settings</h2>
+            <ModelSelection model={model} setModel={setModel} />
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onPress={() => saveAndClose(onClose)}>
+              Save
+            </Button>
+          </ModalFooter>
+        </>
+      )}
+    </ModalContent>
       </Modal>
     </>
   );

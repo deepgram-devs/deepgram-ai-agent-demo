@@ -30,6 +30,7 @@ interface DeepgramContextInterface {
 }
 
 const DeepgramContext = createContext<DeepgramContext>({} as DeepgramContext);
+//export const useDeepgram = () => useContext(DeepgramContext);
 
 const voices: {
   [key: string]: {
@@ -241,7 +242,7 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
       console.log('closed');
     };
 
-    const handleError = (err) => {
+    const handleError = (err: Error) => {
       toast("An unknown error occurred. We'll attempt to reconnect to Deepgram.");
       console.error(err);
       dispatch({ type: 'RESET_CONNECTION' });
@@ -280,4 +281,4 @@ function useDeepgram() {
   return useContext(DeepgramContext);
 }
 
-export { DeepgramContextProvider, useDeepgram, voiceMap, voices };
+export { DeepgramContext, DeepgramContextProvider, useDeepgram, voiceMap, voices };
