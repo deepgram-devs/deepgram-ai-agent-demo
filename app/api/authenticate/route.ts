@@ -17,12 +17,14 @@ export async function GET(request: Request) {
     await deepgram.manage.getProjects();
 
   if (projectsError) {
+    console.log('projectsError', projectsError)
     return NextResponse.json(projectsError);
   }
 
   const project = projectsResult?.projects[0];
 
   if (!project) {
+    console.log('project not found')
     return NextResponse.json(
       new DeepgramError(
         "Cannot find a Deepgram project. Please create a project first."
@@ -39,6 +41,7 @@ export async function GET(request: Request) {
     });
 
   if (newKeyError) {
+    console.log('newKeyError', newKeyError)
     return NextResponse.json(newKeyError);
   }
 
