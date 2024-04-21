@@ -1,4 +1,4 @@
-import React, { useContext, useState, Dispatch, SetStateAction } from 'react';
+import React, { useContext, useState } from 'react';
 import { CogIcon } from "./icons/CogIcon";
 import { Avatar, Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, useDisclosure } from "@nextui-org/react";
 import { DeepgramContext, voiceMap, voices } from "../context/Deepgram";
@@ -11,12 +11,11 @@ const arrayOfVoices = Object.entries(voices).map((e) => ({
 
 // Define the props interface
 interface ModelSelectionProps {
-  model: string;
-  setModel: Dispatch<SetStateAction<string>>;
+    model: string;
+    setModel: Dispatch<SetStateAction<string>>;
 }
 
-const ModelSelection: React.FC<ModelSelectionProps> = ({ model, setModel }) => {
-
+const ModelSelection = ({model,setModel}) => {
   return (
     <Select
       defaultSelectedKeys={["aura-model-asteria"]}

@@ -1,3 +1,19 @@
+// /** @type {import('next').NextConfig} */
+// const nextConfig = {
+//   webpack(config) {
+//     config.module.rules.push({
+//       test: /\.svg$/,
+//       use: ["@svgr/webpack"],
+//     });
+
+//     return config;
+//   },
+//   reactStrictMode: false,
+// };
+
+// module.exports = nextConfig;
+
+
 /** @type {import('next').NextConfig} */
 const CopyPlugin = require("copy-webpack-plugin");
 
@@ -61,7 +77,7 @@ const nextConfig = {
             key: "Cross-Origin-Embedder-Policy",
             value: "require-corp",
           },
-        ],
+         ],
       },
     ];
   },

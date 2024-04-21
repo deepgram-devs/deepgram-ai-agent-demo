@@ -162,7 +162,7 @@ export default function Conversation(): JSX.Element {
     isLoading: llmLoading,
   } = useChat({
     id: "aura",
-    api: "/api/brain",
+    api: "/api/groq",//"/api/brain",
     initialMessages: [systemMessage, greetingMessage],
     onFinish,
     onResponse,
@@ -299,7 +299,7 @@ export default function Conversation(): JSX.Element {
       state.connection?.addListener(LiveTranscriptionEvents.Transcript, onTranscript);
     };
 
-    if (state.connection) {
+    if (state.connection) {// && state.connectionReady
       console.log('if connection, add onOpen');
       state.connection.addListener(LiveTranscriptionEvents.Open, onOpen);
       return () => {
