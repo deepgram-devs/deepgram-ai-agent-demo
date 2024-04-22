@@ -5,9 +5,11 @@ import Image from "next/image";
 import { Spinner } from "@nextui-org/react";
 import { useDeepgram } from "../context/Deepgram"; // Ensure the path matches where your context is defined
 
-export const InitialLoad = ({ fn }: { fn: () => void }) => {
-  const { state } = useDeepgram();  // Using context to get the current state
-  const connecting = state.connecting;  // Assuming `connecting` is managed in the state
+export const InitialLoad = ({ fn, connecting }: { fn: () => void; connecting: boolean }) => {
+  
+  // const { state } = useDeepgram();  // Using context to get the current state
+  // const connecting = state.connecting;  // Assuming `connecting` is managed in the state
+  // console.log('connecting', connecting);
 
   return (
     <>
@@ -23,6 +25,9 @@ export const InitialLoad = ({ fn }: { fn: () => void }) => {
             <br />
             Cognitive Rehab Tech Demo
           </h2>
+          <div className="flex justify-center mt-4">
+            <p>Please select an exercise below</p>
+          </div>
           <span className="mt-4 block font-semibold">
             <div className="bg-white text-black rounded px-10 py-3 font-semibold sm:w-fit sm:mx-auto opacity-90">
               {connecting ? (

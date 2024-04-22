@@ -417,10 +417,12 @@ export default function Conversation(): JSX.Element {
     if (state.connection && state.connectionReady && !microphoneOpen) {
       keepAlive = setInterval(() => {
         // should stop spamming dev console when working on frontend in devmode
-        if (state.connection.getReadyState() !== LiveConnectionState.OPEN) {
-          if (keepAlive) clearInterval(keepAlive);
-        } else {
-          state.connection.keepAlive();
+        if(state.connection){
+          if (state.connection.getReadyState() !== LiveConnectionState.OPEN) {
+            if (keepAlive) clearInterval(keepAlive);
+          } else {
+            state.connection.keepAlive();
+          }
         }
       }, 10000);
     } else {
@@ -443,21 +445,21 @@ export default function Conversation(): JSX.Element {
     }
   }, [chatMessages]);
 
-  interface InitialLoadProps {
-    fn: () => void;
-    connecting: boolean; // Define that this component also expects a boolean 'connecting' prop
-  }
+  // interface InitialLoadProps {
+  //   fn: () => void;
+  //   connecting: boolean; // Define that this component also expects a boolean 'connecting' prop
+  // }
   
-  const InitialLoad: React.FC<InitialLoadProps> = ({ fn, connecting }) => {
-    // Implementation of the component
-    return (
-      <div>
-        {/* Display something based on 'connecting' */}
-        {connecting ? "Connecting..." : "Ready to Start"}
-        <button onClick={fn}>Start</button>
-      </div>
-    );
-  };
+  // const InitialLoad: React.FC<InitialLoadProps> = ({ fn, connecting }) => {
+  //   // Implementation of the component
+  //   return (
+  //     <div>
+  //       {/* Display something based on 'connecting' */}
+  //       {connecting ? "Connecting..." : "Ready to Start"}
+  //       <button onClick={fn}>Start</button>
+  //     </div>
+  //   );
+  // };
 
   return (
     <>

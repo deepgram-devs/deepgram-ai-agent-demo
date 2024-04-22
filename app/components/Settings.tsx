@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, Dispatch, SetStateAction } from 'react';
 import { CogIcon } from "./icons/CogIcon";
 import { Avatar, Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, useDisclosure } from "@nextui-org/react";
 import { DeepgramContext, voiceMap, voices } from "../context/Deepgram";
@@ -9,17 +9,18 @@ const arrayOfVoices = Object.entries(voices).map((e) => ({
   model: e[0],
 }));
 
-// Define the props interface
+// Define the props interface. 
 interface ModelSelectionProps {
-    model: string;
-    setModel: Dispatch<SetStateAction<string>>;
+  model: string | undefined;
+  setModel: Dispatch<SetStateAction<string | undefined>>;
 }
 
-const ModelSelection = ({model,setModel}) => {
+//Renders a select component filled with voice options.
+const ModelSelection: React.FC<ModelSelectionProps> = ({ model, setModel }) => {
   return (
     <Select
       defaultSelectedKeys={["aura-model-asteria"]}
-      selectedKeys={[model]}
+      selectedKeys={model ? [model] : []}  // Ensure only defined models are used
       onSelectionChange={(keys: any) =>
         setModel(keys.entries().next().value[0])
       }
@@ -47,12 +48,15 @@ const ModelSelection = ({model,setModel}) => {
           ],
         },
       }}
+      
       popoverProps={{
         classNames: {
           base: "before:bg-default-200",
           content: "p-0 border-small border-divider bg-background",
         },
       }}
+      
+      //Uses renderValue to customize the display of the selected item in the dropdown.
       renderValue={(items) => {
         return items.map((item) => (
           <div key={item.key} className="flex items-center gap-2">
@@ -99,7 +103,8 @@ export const Settings = () => {
   const { ttsOptions } = state;
   const { toast } = useToast();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [model, setModel] = useState(ttsOptions?.model);
+  const [model, setModel] = useState<string | undefined>(undefined);  // Allowing `undefined` explicitly
+
 
   const saveAndClose = (onClose: () => void) => {
     dispatch({

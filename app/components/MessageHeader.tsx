@@ -21,11 +21,8 @@ const MessageHeader = ({
     return (
       <div className="flex items-center space-x-2 rtl:space-x-reverse">
         <span className="text-sm font-semibold text-white">
-          {foundAudio?.model
-            ? voiceMap(foundAudio?.model).name
-            : foundData?.ttsModel
-              ? voiceMap(foundData?.ttsModel).name
-              : "Deepgram AI"}
+          {/* {foundAudio?.model ? voiceMap(foundAudio?.model).name : foundData?.ttsModel ? voiceMap(foundData?.ttsModel).name : "Deepgram AI"} */}
+          {"Devin Clark: Cognitive Therapist"} 
         </span>
         <span className="text-xs font-normal text-gray-400">
           {moment().calendar()}
