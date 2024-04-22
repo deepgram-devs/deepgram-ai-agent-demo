@@ -77,16 +77,26 @@ export default function Conversation(): JSX.Element {
       const start = Date.now();
       const model = state.ttsOptions?.model ?? "aura-asteria-en";
 
+      //Deepgram TTS
       const res = await fetch(`/api/speak?model=${model}`, {
         cache: "no-store",
         method: "POST",
         body: JSON.stringify(message),
       });
+    
+      // //ElevenLabs TTS
+      // const res = await fetch('/api/natural-speak', {
+      //   cache: "no-store",
+      //   method: "POST",
+      //   body: JSON.stringify(message),
+      // });
 
       const headers = res.headers;
       const blob = await res.blob();
 
       stopMicrophone();
+      
+      //Delay before capturing audio. Does this work?
       const waiting = setTimeout(() => {
         clearTimeout(waiting);
         setProcessing(false);
@@ -162,7 +172,8 @@ export default function Conversation(): JSX.Element {
     isLoading: llmLoading,
   } = useChat({
     id: "aura",
-    api: "/api/groq",//"/api/brain",
+    //api: "/api/brain", //OpenAI
+    api: "/api/groq",//Groq
     initialMessages: [systemMessage, greetingMessage],
     onFinish,
     onResponse,
