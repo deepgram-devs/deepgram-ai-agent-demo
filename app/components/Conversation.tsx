@@ -502,7 +502,7 @@ export default function Conversation(): JSX.Element {
                         )}
 
                         <div
-                          className="h-16 col-start-1 col-end-13"
+                          className="h-16 col-start-1 col-end-13 responsive-hide"
                           ref={messageMarker}
                         ></div>
                       </>

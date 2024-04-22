@@ -246,13 +246,13 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
       });
   
       connection.on(LiveTranscriptionEvents.Close, () => {
-        toast("The connection to Deepgram closed, we'll attempt to reconnect.");
+        toast("The connection to ExtraYear closed, we'll attempt to reconnect.");
         dispatch({ type: 'RESET_CONNECTION' });
         console.log('closed');
       });
   
       connection.on(LiveTranscriptionEvents.Error, () => {
-        toast("An unknown error occurred. We'll attempt to reconnect to Deepgram.");
+        toast("An unknown error occurred. We'll attempt to reconnect to ExtraYear.");
         dispatch({ type: 'RESET_CONNECTION' });
       });
 

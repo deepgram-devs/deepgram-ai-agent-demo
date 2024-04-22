@@ -40,7 +40,7 @@ const MessageMeta = ({
     return (
       <>
         <div
-          className={`flex gap-x-2.5 text-xs text-[#BBBBBF] ${className} flex-wrap`}
+          className={`flex gap-x-2.5 text-xs text-[#BBBBBF] ${className} flex-wrap responsive-hide`}
         >
           <span>
             <BoltIcon className="w-[1em] h-[1em]" />
