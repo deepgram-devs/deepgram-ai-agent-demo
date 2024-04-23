@@ -9,6 +9,18 @@ const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY
 });
 
+function cleanString(inputString) {
+  // Remove multiple quotes from the beginning of the string
+  let quotesRemoved = inputString.replace(/^['"]+|['"]+$/g, '');
+  let cleanedString = quotesRemoved.replace(/^[\(\)\[\]\{\}]+|[\(\)\[\]\{\}]+$/g, '');
+  
+  // Replace newlines not at the start or end of the string
+  let newlinesRemoved = cleanedString.replace(/(?<!^)\n(?!$)/g, '');
+  //let newlinesRemoved = cleanedString.replace(/(?<!^)\n(?!$)/g, '<br />');
+
+  return newlinesRemoved;
+}
+
 export async function POST(req: Request) {
   // Extract the `chatMessages` from the body of the request
   const { messages } = await req.json();
@@ -18,8 +30,8 @@ export async function POST(req: Request) {
   try {
     const response = await groq.chat.completions.create({
       messages: messages,
-      //model: "Llama3-8b-8192",
-      model: "mixtral-8x7b-32768",
+      model: "Llama3-8b-8192",
+      //model: "mixtral-8x7b-32768",
       temperature: 1.0,
       max_tokens: 1024,
       top_p: 1,
@@ -28,7 +40,8 @@ export async function POST(req: Request) {
     });
 
     // Check response structure and serialize as needed
-    const textResponse = JSON.stringify(response.choices[0]?.message?.content); // Convert the response to a JSON string if it's an object
+    let textResponse = cleanString(response.choices[0]?.message?.content); // Convert the response to a JSON string if it's an object
+    textResponse =  JSON.stringify(textResponse);
 
     // if (!response?.choices[0]?.message?.content) {
     //   return new NextResponse("Unable to get response from API.", {
