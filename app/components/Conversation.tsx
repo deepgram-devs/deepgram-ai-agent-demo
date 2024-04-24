@@ -219,7 +219,7 @@ export default function Conversation(): JSX.Element {
     stream,
     onSpeechStart,
     onSpeechEnd,
-    positiveSpeechThreshold: 0.55,
+    positiveSpeechThreshold: 0.9,
     negativeSpeechThreshold: 0.55 - 0.25,
     redemptionFrames: 20,
   });
