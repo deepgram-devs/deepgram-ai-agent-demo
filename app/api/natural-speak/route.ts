@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
         );
     
     const voiceId = 'XrExE9yKIg1WjnnlVkGX';
-    const xilabsUrl =  `${process.env.ELEVENLABS_URL}/v1/text-to-speech/${voiceId}/stream`;
+    const xilabsUrl =  `${process.env.ELEVENLABS_URL}/v1/text-to-speech/${voiceId}/stream?optimize_streaming_latency=4`;
     const options = {
         method: 'POST',
         headers: {
