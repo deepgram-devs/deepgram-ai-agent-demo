@@ -47,3 +47,5 @@ next-env.d.ts
 
 # idea folder
 .idea
+
+backend/__pycache__/
