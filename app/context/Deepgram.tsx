@@ -264,8 +264,6 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
         return () => {
           console.log('cleanup connection');
           dispatch({ type: 'RESET_CONNECTION' });
-          console.log(state.apiKey);
-          console.log(state.isLoadingKey);
             // connection?.removeListener(LiveTranscriptionEvents.Open, handleOpen);
             // connection?.removeListener(LiveTranscriptionEvents.Close, handleClose);
             // connection?.removeListener(LiveTranscriptionEvents.Error, handleError);

@@ -7,6 +7,7 @@ import { RightBubble } from "./RightBubble";
 // }
 
 function isUserMessage(message: any): message is Message {
+  
   return message.role === "user";
 }
 
