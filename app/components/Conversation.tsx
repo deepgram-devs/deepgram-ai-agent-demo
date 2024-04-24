@@ -70,7 +70,7 @@ export default function Conversation(): JSX.Element {
   const [isProcessing, setProcessing] = useState(false);
 
   /**
-   * Request audio from API. Currently gets called when message is complete
+   * Request audio from API
    */
   const requestTtsAudio = useCallback(
     async (message: Message) => {
@@ -134,7 +134,6 @@ export default function Conversation(): JSX.Element {
     [requestTtsAudio]
   );
 
-  //Calculate LLM latency
   const onResponse = useCallback((res: Response) => {
     (async () => {
       const start = Number(res.headers.get("x-llm-start"));
@@ -242,140 +241,6 @@ export default function Conversation(): JSX.Element {
     negativeSpeechThreshold: 0.6 - 0.15,
   });
 
-
-  const streamTts = () => {
-    const { queue, add, remove } = useQueue([]);
-
-    // Array to hold extracted segments
-    let segments = [];
-
-    // A variable to hold the index after the last splitter
-    let lastIndex = 0;
-    useEffect(() => {
-      console.log('chatmessages', chatMessages[chatMessages.length - 1].content);
-      console.log('llmloading', llmLoading);
-
-      if(llmLoading){
-        let currentMessage = chatMessages[chatMessages.length - 1].content;
-        let splitters = [".", ",", "?", "!", ";", ":", "—", "-", "(", ")", "[", "]", "}"];
-        // Iterate through the streamingText starting from the lastIndex
-        for (let i = lastIndex; i < currentMessage.length; i++) {
-          // Check if the current character is a splitter
-          if (splitters.includes(currentMessage[i])) {
-              // Avoid capturing text if the splitter is at the start of the stream
-              if (i > lastIndex) {
-                  const segment = currentMessage.substring(lastIndex, i + 1).trim();
-                  segments.push(segment);
-                  //Audiod segments[segments.length -1]
-
-
-
-
-
-
-
-
-
-
-
-
-            }
-            // Update lastIndex to the position after the current splitter
-            lastIndex = i + 1;
-        }
-      }
-    }
-
-    const headers = res.headers;
-      const blob = await res.blob();
-
-      stopMicrophone();
-      
-      //Delay before capturing audio. Does this work?
-      const waiting = setTimeout(() => {
-        clearTimeout(waiting);
-        setProcessing(false);
-      }, 200);
-
-      startAudio(blob, "audio/mp3", message.id).then(() => {
-        addAudio({
-          id: message.id,
-          blob,
-          latency: Number(headers.get("X-DG-Latency")) ?? Date.now() - start,
-          networkLatency: Date.now() - start,
-          model,
-        });
-
-        if (player) {
-          player.onended = () => {
-            const waiting = setTimeout(() => {
-              clearTimeout(waiting);
-              setProcessing(false);
-            }, 500);
-            startMicrophone();
-          };
-        } else {
-          console.error('Player is undefined');
-        }
-      });
-
-
-
-    
-
-
-    
-
-      // //Deepgram TTS
-      // const res = await fetch(`/api/speak?model=${model}`, {
-      //   cache: "no-store",
-      //   method: "POST",
-      //   body: JSON.stringify(message),
-      // });
-    
-      // // //ElevenLabs TTS
-      // // const res = await fetch('/api/natural-speak', {
-      // //   cache: "no-store",
-      // //   method: "POST",
-      // //   body: JSON.stringify(message),
-      // // });
-
-      // const headers = res.headers;
-      // const blob = await res.blob();
-
-      // stopMicrophone();
-      
-      // //Delay before capturing audio. Does this work?
-      // const waiting = setTimeout(() => {
-      //   clearTimeout(waiting);
-      //   setProcessing(false);
-      // }, 200);
-
-      // startAudio(blob, "audio/mp3", message.id).then(() => {
-      //   addAudio({
-      //     id: message.id,
-      //     blob,
-      //     latency: Number(headers.get("X-DG-Latency")) ?? Date.now() - start,
-      //     networkLatency: Date.now() - start,
-      //     model,
-      //   });
-
-      //   if (player) {
-      //     player.onended = () => {
-      //       const waiting = setTimeout(() => {
-      //         clearTimeout(waiting);
-      //         setProcessing(false);
-      //       }, 500);
-      //       startMicrophone();
-      //     };
-      //   } else {
-      //     console.error('Player is undefined');
-      //   }
-      // });
-    }, [
-      chatMessages,
-    ]);
-
   useEffect(() => {
     if (llmLoading) return;
     if (!state.llmLatency) return;
@@ -387,11 +252,7 @@ export default function Conversation(): JSX.Element {
       ttsModel: state.ttsOptions?.model,
     };
 
-    //Currently adds message at the end of the LLM response (does not update during stream).
     addMessageData(latestLlmMessage);
-    segments = [];
-    // A variable to hold the index after the last splitter
-    let lastIndex = 0;
   }, [
     chatMessages,
     state.llmLatency,  // Update dependency to use state from context
@@ -399,16 +260,6 @@ export default function Conversation(): JSX.Element {
     addMessageData,
     state.ttsOptions?.model,  // Update dependency to use state from context
   ]);
-
-
-  
-
-
-
-
-
-
-
 
   /**
    * Contextual functions
@@ -440,8 +291,8 @@ export default function Conversation(): JSX.Element {
     state.ttsOptions?.model,
   ]);
 
-  //updates for microphone input
   const onTranscript = useCallback((data: LiveTranscriptionEvent) => {
+    console.log('ontranscript');
     let content = utteranceText(data);
 
     if (content !== "" || data.speech_final) {
@@ -455,12 +306,15 @@ export default function Conversation(): JSX.Element {
 
   useEffect(() => {
     const onOpen = () => {
+      console.log('onOpen');
       state.connection?.addListener(LiveTranscriptionEvents.Transcript, onTranscript);
     };
 
     if (state.connection) {// && state.connectionReady
+      console.log('if connection, add onOpen');
       state.connection.addListener(LiveTranscriptionEvents.Open, onOpen);
       return () => {
+        console.log('cleanup onOpen');
         state.connection?.removeListener(LiveTranscriptionEvents.Open, onOpen);
         state.connection?.removeListener(LiveTranscriptionEvents.Transcript, onTranscript);
       };

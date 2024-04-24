@@ -11,6 +11,7 @@ function isUserMessage(message: any): message is Message {
 }
 
 function isAssistantMessage(message: any): message is Message {
+  console.log('message', message);
   return message.role === "assistant";
 }
 
