@@ -1,33 +1,33 @@
-"use client";
+'use client';
 
 import {
   LiveClient,
   LiveConnectionState,
   LiveTranscriptionEvent,
   LiveTranscriptionEvents,
-} from "@deepgram/sdk";
-import { Message, useChat } from "ai/react";
-import { NextUIProvider } from "@nextui-org/react";
-import { useMicVAD } from "@ricky0123/vad-react";
-import { useNowPlaying } from "react-nowplaying";
-import { useQueue } from "@uidotdev/usehooks";
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+} from '@deepgram/sdk';
+import { Message, useChat } from 'ai/react';
+import { NextUIProvider } from '@nextui-org/react';
+import { useMicVAD } from '@ricky0123/vad-react';
+import { useNowPlaying } from 'react-nowplaying';
+import { useQueue } from '@uidotdev/usehooks';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 
-import { ChatBubble } from "./ChatBubble";
+import { ChatBubble } from './ChatBubble';
 import {
   contextualGreeting,
   generateRandomString,
   utteranceText,
-} from "../lib/helpers";
-import { Controls } from "./Controls";
-import { InitialLoad } from "./InitialLoad";
-import { MessageMetadata } from "../lib/types";
-import { RightBubble } from "./RightBubble";
-import { systemContent } from "../lib/constants";
-import { useDeepgram } from "../context/Deepgram";
-import { useMessageData } from "../context/MessageMetadata";
-import { useMicrophone } from "../context/Microphone";
-import { useAudioStore } from "../context/AudioStore";
+} from '../lib/helpers';
+import { Controls } from './Controls';
+import { InitialLoad } from './InitialLoad';
+import { MessageMetadata } from '../lib/types';
+import { RightBubble } from './RightBubble';
+import { systemContent } from '../lib/constants';
+import { useDeepgram } from '../context/Deepgram';
+import { useMessageData } from '../context/MessageMetadata';
+import { useMicrophone } from '../context/Microphone';
+import { useAudioStore } from '../context/AudioStore';
 
 /**
  * Conversation element that contains the conversational AI app.
@@ -76,11 +76,11 @@ export default function Conversation(): JSX.Element {
   const requestTtsAudio = useCallback(
     async (message: Message) => {
       const start = Date.now();
-      const model = ttsOptions?.model ?? "aura-asteria-en";
+      const model = ttsOptions?.model ?? 'aura-asteria-en';
 
       const res = await fetch(`/api/speak?model=${model}`, {
-        cache: "no-store",
-        method: "POST",
+        cache: 'no-store',
+        method: 'POST',
         body: JSON.stringify(message),
       });
 
@@ -88,11 +88,11 @@ export default function Conversation(): JSX.Element {
 
       const blob = await res.blob();
 
-      startAudio(blob, "audio/mp3", message.id).then(() => {
+      startAudio(blob, 'audio/mp3', message.id).then(() => {
         addAudio({
           id: message.id,
           blob,
-          latency: Number(headers.get("X-DG-Latency")) ?? Date.now() - start,
+          latency: Number(headers.get('X-DG-Latency')) ?? Date.now() - start,
           networkLatency: Date.now() - start,
           model,
         });
@@ -117,8 +117,8 @@ export default function Conversation(): JSX.Element {
   const onResponse = useCallback((res: Response) => {
     (async () => {
       setLlmNewLatency({
-        start: Number(res.headers.get("x-llm-start")),
-        response: Number(res.headers.get("x-llm-response")),
+        start: Number(res.headers.get('x-llm-start')),
+        response: Number(res.headers.get('x-llm-response')),
       });
     })();
   }, []);
@@ -126,7 +126,7 @@ export default function Conversation(): JSX.Element {
   const systemMessage: Message = useMemo(
     () => ({
       id: generateRandomString(7),
-      role: "system",
+      role: 'system',
       content: systemContent,
     }),
     []
@@ -135,7 +135,7 @@ export default function Conversation(): JSX.Element {
   const greetingMessage: Message = useMemo(
     () => ({
       id: generateRandomString(7),
-      role: "assistant",
+      role: 'assistant',
       content: contextualGreeting(),
     }),
     []
@@ -152,8 +152,8 @@ export default function Conversation(): JSX.Element {
     handleSubmit,
     isLoading: llmLoading,
   } = useChat({
-    id: "aura",
-    api: "/api/brain",
+    id: 'aura',
+    api: '/api/brain',
     initialMessages: [systemMessage, greetingMessage],
     onFinish,
     onResponse,
@@ -169,21 +169,22 @@ export default function Conversation(): JSX.Element {
      * even before we start sending it to deepgram.
      * So ignore any VAD events before we "open" the mic.
      */
+    console.log('VAD speech end');
     if (!microphoneOpen) return;
 
     setFailsafeTimeout(
       setTimeout(() => {
         if (currentUtterance) {
-          console.log("failsafe fires! pew pew!!");
+          console.log('failsafe fires! pew pew!!');
           setFailsafeTriggered(true);
           append({
-            role: "user",
+            role: 'user',
             content: currentUtterance,
           });
           clearTranscriptParts();
           setCurrentUtterance(undefined);
         }
-      }, 1500)
+      }, 2500)
     );
 
     return () => {
@@ -199,6 +200,7 @@ export default function Conversation(): JSX.Element {
      * even before we start sending it to deepgram.
      * So ignore any VAD events before we "open" the mic.
      */
+    console.log('VAD speech start');
     if (!microphoneOpen) return;
 
     /**
@@ -208,7 +210,7 @@ export default function Conversation(): JSX.Element {
 
     if (!player?.ended) {
       stopAudio();
-      console.log("barging in! SHH!");
+      console.log('barging in! SHH!');
     }
   };
 
@@ -217,8 +219,9 @@ export default function Conversation(): JSX.Element {
     stream,
     onSpeechStart,
     onSpeechEnd,
-    positiveSpeechThreshold: 0.6,
-    negativeSpeechThreshold: 0.6 - 0.15,
+    positiveSpeechThreshold: 0.55,
+    negativeSpeechThreshold: 0.55 - 0.25,
+    redemptionFrames: 20,
   });
 
   useEffect(() => {
@@ -277,7 +280,7 @@ export default function Conversation(): JSX.Element {
       let content = utteranceText(data);
 
       // i only want an empty transcript part if it is speech_final
-      if (content !== "" || data.speech_final) {
+      if (content !== '' || data.speech_final) {
         /**
          * use an outbound message queue to build up the unsent utterance
          */
@@ -319,7 +322,7 @@ export default function Conversation(): JSX.Element {
     const last = parts[parts.length - 1];
     const content = parts
       .map(({ text }) => text)
-      .join(" ")
+      .join(' ')
       .trim();
 
     /**
@@ -345,7 +348,7 @@ export default function Conversation(): JSX.Element {
     /**
      * record the last time we recieved a word
      */
-    if (last.text !== "") {
+    if (last.text !== '') {
       setLastUtterance(Date.now());
     }
 
@@ -355,7 +358,7 @@ export default function Conversation(): JSX.Element {
     if (last && last.speech_final) {
       clearTimeout(failsafeTimeout);
       append({
-        role: "user",
+        role: 'user',
         content,
       });
       clearTranscriptParts();
@@ -433,7 +436,7 @@ export default function Conversation(): JSX.Element {
   useEffect(() => {
     if (messageMarker.current) {
       messageMarker.current.scrollIntoView({
-        behavior: "auto",
+        behavior: 'auto',
       });
     }
   }, [chatMessages]);
@@ -447,7 +450,7 @@ export default function Conversation(): JSX.Element {
               <div className="flex flex-col justify-between h-full">
                 <div
                   className={`flex flex-col h-full overflow-hidden ${
-                    initialLoad ? "justify-center" : "justify-end"
+                    initialLoad ? 'justify-center' : 'justify-end'
                   }`}
                 >
                   <div className="grid grid-cols-12 overflow-x-auto gap-y-2">

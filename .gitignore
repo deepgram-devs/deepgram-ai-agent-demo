@@ -45,5 +45,7 @@ next-env.d.ts
 # container
 .devcontainer
 
-# pycharm
+# idea folder
 .idea
+
+backend/__pycache__/
