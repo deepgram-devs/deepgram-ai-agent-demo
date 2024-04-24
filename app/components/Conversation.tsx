@@ -219,9 +219,9 @@ export default function Conversation(): JSX.Element {
     stream,
     onSpeechStart,
     onSpeechEnd,
-    positiveSpeechThreshold: 0.9,
-    negativeSpeechThreshold: 0.55 - 0.25,
-    redemptionFrames: 20,
+    positiveSpeechThreshold: 0.8,
+    negativeSpeechThreshold: 0.8 - 0.25,
+    redemptionFrames: 40,
   });
 
   useEffect(() => {
