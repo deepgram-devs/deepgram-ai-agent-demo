@@ -1,7 +1,9 @@
 import { DeepgramError, createClient } from "@deepgram/sdk";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
-export async function GET(request: Request) {
+export const revalidate = 0;
+
+export async function GET(request: NextRequest) {
   // exit early so we don't request 70000000 keys while in devmode
   if (process.env.DEEPGRAM_ENV === "development") {
     return NextResponse.json({
@@ -37,7 +39,7 @@ export async function GET(request: Request) {
       comment: "Temporary API key",
       scopes: ["usage:write"],
       tags: ["next.js"],
-      time_to_live_in_seconds: 10,
+      time_to_live_in_seconds: 60,
     });
 
   if (newKeyError) {
@@ -45,5 +47,13 @@ export async function GET(request: Request) {
     return NextResponse.json(newKeyError);
   }
 
-  return NextResponse.json({ ...newKeyResult, url });
+  const response = NextResponse.json({ ...newKeyResult, url });
+  response.headers.set("Surrogate-Control", "no-store");
+  response.headers.set(
+    "Cache-Control",
+    "s-maxage=0, no-store, no-cache, must-revalidate, proxy-revalidate"
+  );
+  response.headers.set("Expires", "0");
+
+  return response;
 }

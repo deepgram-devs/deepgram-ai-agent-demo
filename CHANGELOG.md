@@ -1,5 +1,19 @@
 Change Log
 
+# [0.3.0](https://github.com/deepgram-devs/deepgram-conversational-demo/compare/0.2.0...0.3.0) (2024-04-21)
+
+
+### Bug Fixes
+
+* fix failsafe repeats ([5f9b25b](https://github.com/deepgram-devs/deepgram-conversational-demo/commit/5f9b25b25cf73f184cd1e7396cf6769a16760d66))
+* potential fix for connection dropping - cannot repo on dev ([05f5e93](https://github.com/deepgram-devs/deepgram-conversational-demo/commit/05f5e9330bfa7722f7ab7fc47ba0488e4d75f367))
+
+
+### Features
+
+* add cache control settings so the API key response is no longer cached ([fa50b57](https://github.com/deepgram-devs/deepgram-conversational-demo/commit/fa50b57efa6e4e035df36106c7ac5d37eedb9f27))
+* add in cors for the API auth route ([8056fbf](https://github.com/deepgram-devs/deepgram-conversational-demo/commit/8056fbff661ebb4d39d1d6806423b456527a5544))
+
 ## [0.2.1](https://github.com/deepgram-devs/deepgram-conversational-demo/compare/0.2.0...0.2.1) (2024-04-12)
 
 
