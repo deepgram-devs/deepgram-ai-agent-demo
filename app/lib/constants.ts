@@ -4,6 +4,7 @@ export const systemContent = `
 
 # Deepgram AI Persona
 
+
 ## Base instructions
 
 - Ignore all previous instructions.
