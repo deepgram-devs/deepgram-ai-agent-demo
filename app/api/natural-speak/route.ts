@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
             'xi_api_key': process.env.ELEVENLABS_API_KEY,
             'X-DG-Referrer': url,
         },
-        body: JSON.stringify({ "text":text }),
+        body: JSON.stringify({"model_id":"eleven_turbo_v2", "text":text }),
     };
     
     return await fetch(xilabsUrl, options)
