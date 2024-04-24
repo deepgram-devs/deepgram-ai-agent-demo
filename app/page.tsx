@@ -24,17 +24,17 @@ export default function Home() {
           <header className="mx-auto w-full max-w-7xl px-4 md:px-6 lg:px-8 flex items-center justify-between">
             <div>
               <a className="flex items-center" href="/">
-                <Image
+                {/* <Image
                   className="w-auto h-8 max-w-[12.5rem] sm:max-w-none"
                   src="/deepgram.svg"
                   alt="Deepgram Logo"
                   width={0}
                   height={0}
                   priority
-                />
+                /> */}
               </a>
             </div>
-            <div className="flex items-center gap-6 text-sm">
+            {/* <div className="flex items-center gap-6 text-sm">
               <span className="mt-1">
                 <GitHubButton
                   href="https://github.com/deepgram-devs/deepgram-conversational-demo"
@@ -56,7 +56,7 @@ export default function Home() {
                   Get an API Key
                 </a>
               </span>
-            </div>
+            </div> */}
           </header>
         </div>
 
@@ -66,7 +66,7 @@ export default function Home() {
         </main>
 
         {/* height 4rem */}
-        <div className=" backdrop-blur-[2px] h-[4rem] flex items-center">
+        {/* <div className=" backdrop-blur-[2px] h-[4rem] flex items-center">
           <footer className="mx-auto w-full max-w-7xl px-4 md:px-6 lg:px-8 flex items-center justify-center gap-4 md:text-xl font-inter text-[#8a8a8e]">
             <span className="text-base text-[#4e4e52]">share it</span>
             <a
@@ -125,7 +125,7 @@ export default function Home() {
               contact us
             </a>
           </footer>
-        </div>
+        </div> */}
       </div>
     </>
   );
