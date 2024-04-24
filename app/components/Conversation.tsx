@@ -79,23 +79,21 @@ export default function Conversation(): JSX.Element {
       const model = state.ttsOptions?.model ?? "aura-asteria-en";
 
       //Deepgram TTS
-      // const res = await fetch(`/api/speak?model=${model}`, {
-      //   cache: "no-store",
-      //   method: "POST",
-      //   body: JSON.stringify(message),
-      // });
-    
-      // //ElevenLabs TTS
-      const res = await fetch('/api/natural-speak', {
+      const res = await fetch(`/api/speak?model=${model}`, {
         cache: "no-store",
         method: "POST",
         body: JSON.stringify(message),
       });
+    
+      // //ElevenLabs TTS
+      // const res = await fetch('/api/natural-speak', {
+      //   cache: "no-store",
+      //   method: "POST",
+      //   body: JSON.stringify(message),
+      // });
 
       const headers = res.headers;
       const blob = await res.blob();
-
-      console.log('headers', headers);
 
       stopMicrophone();
       
@@ -120,6 +118,7 @@ export default function Conversation(): JSX.Element {
               clearTimeout(waiting);
               setProcessing(false);
             }, 500);
+            //Microphone is turned off when LLM is generating a response. After playing the TTS, turn the mic back on again.
             startMicrophone();
           };
         } else {
@@ -254,7 +253,11 @@ export default function Conversation(): JSX.Element {
   });
 
   useEffect(() => {
-    if (llmLoading) return;
+    if (llmLoading) {
+      //don't listen for voice input while LLM response is generating and displaying
+      stopMicrophone();
+      return;
+    };
     if (!state.llmLatency) return;
 
     const latestLlmMessage: MessageMetadata = {

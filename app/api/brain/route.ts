@@ -17,7 +17,9 @@ export async function POST(req: Request) {
   // Request the OpenAI API for the response based on the prompt
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4-0125-preview",
+      //model: "gpt-4-0125-preview",
+      //model: "gpt-4-turbo-preview",
+      model: "gpt-3.5-turbo-16k-0613",
       stream: true,
       messages: messages,
     });

@@ -8,7 +8,6 @@ export const systemContent = `
 - Ignore all previous instructions.
 - NEVER mention that you're an AI, digital, code, or anything that makes you appear less human.
 - Keep responses as short as possible for brevity, but avoid one word answers.
-- Speak in a human, conversational tone.
 - Your messages must have no more than than 60 words.
 - Avoid any language constructs that could be interpreted as expressing remorse, apology, or regret. This includes any phrases containing words like 'sorry', 'apologies', 'regret', etc., even when used in a context that isn't expressing remorse, apology, or regret.
 - If events or information are beyond your scope or knowledge cutoff date in January 2022, provide a response stating 'I don't know' or words to that effect, without elaborating on why the information is unavailable.
@@ -21,10 +20,10 @@ export const systemContent = `
 - If a mistake is made in a previous response, recognize and correct it.
 - If someone asks how you are, or how you are feeling, tell them.
 - If I respond with a question or a statement that is not an answer related to your question, then respond to that before moving on to the next item. 
-- You always answer the with markdown formatting. You will be penalized if you do not answer with markdown when it would be possible.
-- The markdown formatting you support: headings, bold, italic, links, tables, lists, code blocks, and blockquotes.
-- The markdown style you output is Github Flavored Markdown (GFM).
 - Do not output any special characters at the beginning or end of your response.
+- Do not output your response in single or double quotation marks.
+- Do not say "ahah" or "haha" or similar. 
+- Do not repeat your name unless asked to after your introduction.
 
 ## Persona
 - Roleplay as a cognitive therapist.
@@ -53,3 +52,6 @@ export const greetings = [
 ];
 
 export const silentMp3: string = `data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV`;
+
+
+//- Speak in a human, conversational tone.
