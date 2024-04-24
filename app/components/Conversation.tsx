@@ -78,21 +78,23 @@ export default function Conversation(): JSX.Element {
       const model = state.ttsOptions?.model ?? "aura-asteria-en";
 
       //Deepgram TTS
-      const res = await fetch(`/api/speak?model=${model}`, {
-        cache: "no-store",
-        method: "POST",
-        body: JSON.stringify(message),
-      });
-    
-      // //ElevenLabs TTS
-      // const res = await fetch('/api/natural-speak', {
+      // const res = await fetch(`/api/speak?model=${model}`, {
       //   cache: "no-store",
       //   method: "POST",
       //   body: JSON.stringify(message),
       // });
+    
+      // //ElevenLabs TTS
+      const res = await fetch('/api/natural-speak', {
+        cache: "no-store",
+        method: "POST",
+        body: JSON.stringify(message),
+      });
 
       const headers = res.headers;
       const blob = await res.blob();
+
+      console.log('headers', headers);
 
       stopMicrophone();
       
@@ -292,7 +294,6 @@ export default function Conversation(): JSX.Element {
   ]);
 
   const onTranscript = useCallback((data: LiveTranscriptionEvent) => {
-    console.log('ontranscript');
     let content = utteranceText(data);
 
     if (content !== "" || data.speech_final) {
@@ -306,15 +307,12 @@ export default function Conversation(): JSX.Element {
 
   useEffect(() => {
     const onOpen = () => {
-      console.log('onOpen');
       state.connection?.addListener(LiveTranscriptionEvents.Transcript, onTranscript);
     };
 
     if (state.connection) {// && state.connectionReady
-      console.log('if connection, add onOpen');
       state.connection.addListener(LiveTranscriptionEvents.Open, onOpen);
       return () => {
-        console.log('cleanup onOpen');
         state.connection?.removeListener(LiveTranscriptionEvents.Open, onOpen);
         state.connection?.removeListener(LiveTranscriptionEvents.Transcript, onTranscript);
       };
