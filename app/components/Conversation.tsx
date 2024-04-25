@@ -183,8 +183,8 @@ export default function Conversation(): JSX.Element {
     isLoading: llmLoading,
   } = useChat({
     id: "aura",
-    //api: "/api/brain", //OpenAI
-    api: "/api/groq",//Groq
+    api: "/api/brain", //OpenAI
+    //api: "/api/groq",//Groq
     initialMessages: [systemMessage, promptMessage, greetingMessage],
     onFinish,
     onResponse,
