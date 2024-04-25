@@ -24,11 +24,14 @@ import { InitialLoad } from "./InitialLoad";
 import { MessageMetadata } from "../lib/types";
 import { RightBubble } from "./RightBubble";
 import { systemContent } from "../lib/constants";
-import { articleConversationContent } from "../prompts/articleConversation";
 import { useDeepgram } from "../context/Deepgram";
 import { useMessageData } from "../context/MessageMetadata";
 import { useMicrophone } from "../context/Microphone";
 import { useAudioStore } from "../context/AudioStore";
+
+import { articleConversationContent } from "../prompts/articleConversation";
+import { voyager1ConversationContent } from "../prompts/voyager1Conversation";
+import { newsArticleConversationContent } from "../prompts/newsArticlesConversation";
 
 /**
  * Conversation element that contains the conversational AI app.
@@ -79,18 +82,18 @@ export default function Conversation(): JSX.Element {
       const model = state.ttsOptions?.model ?? "aura-asteria-en";
 
       //Deepgram TTS
-      // const res = await fetch(`/api/speak?model=${model}`, {
-      //   cache: "no-store",
-      //   method: "POST",
-      //   body: JSON.stringify(message),
-      // });
-    
-      // //ElevenLabs TTS
-      const res = await fetch('/api/natural-speak', {
+      const res = await fetch(`/api/speak?model=${model}`, {
         cache: "no-store",
         method: "POST",
         body: JSON.stringify(message),
       });
+    
+      // //ElevenLabs TTS
+      // const res = await fetch('/api/natural-speak', {
+      //   cache: "no-store",
+      //   method: "POST",
+      //   body: JSON.stringify(message),
+      // });
 
       const headers = res.headers;
       const blob = await res.blob();
@@ -166,7 +169,7 @@ export default function Conversation(): JSX.Element {
     () => ({
       id: 'AAAA',//LmSwiUg
       role: "user",
-      content: articleConversationContent,
+      content: newsArticleConversationContent,
     }),
     []
   );
