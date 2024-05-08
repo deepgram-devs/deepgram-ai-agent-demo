@@ -45,11 +45,10 @@ const defaultSttsOptions = {
   model: DEFAULT_STT_MODEL,
   interim_results: true,
   smart_format: true,
-  endpointing: 350,
-  utterance_end_ms: 1000,
+  endpointing: 550,
+  utterance_end_ms: 1500,
   filler_words: true,
 }
-
 
 /**
  * TTS Voice Options
@@ -161,7 +160,11 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
       if (!connection && !connecting) {
         setConnecting(true);
 
-        const connection = new LiveClient(await getApiKey(), {}, defaultSttsOptions);
+        const connection = new LiveClient(
+          await getApiKey(),
+          {},
+          defaultSttsOptions
+        );
 
         setConnection(connection);
         setConnecting(false);
