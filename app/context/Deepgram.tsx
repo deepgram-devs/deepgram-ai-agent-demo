@@ -20,9 +20,9 @@ import { useToast } from "./Toast";
 import { useLocalStorage } from "../lib/hooks/useLocalStorage";
 
 type DeepgramContext = {
-  ttsOptions: SpeakSchema;
+  ttsOptions: SpeakSchema | undefined;
   setTtsOptions: (value: SpeakSchema) => void;
-  sttOptions: LiveSchema;
+  sttOptions: LiveSchema | undefined;
   setSttOptions: (value: LiveSchema) => void;
   connection: LiveClient | undefined;
   connectionReady: boolean;
@@ -36,7 +36,21 @@ const DeepgramContext = createContext({} as DeepgramContext);
 
 const DEFAULT_TTS_MODEL = 'aura-asteria-en';
 const DEFAULT_STT_MODEL = 'nova-2';
-;
+
+const defaultTtsOptions = {
+  model: DEFAULT_TTS_MODEL
+}
+
+const defaultSttsOptions = {
+  model: DEFAULT_STT_MODEL,
+  interim_results: true,
+  smart_format: true,
+  endpointing: 350,
+  utterance_end_ms: 1000,
+  filler_words: true,
+}
+
+
 /**
  * TTS Voice Options
  */
@@ -136,44 +150,51 @@ const getApiKey = async (): Promise<string> => {
 
 const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
   const { toast } = useToast();
-  const [ttsOptions, setTtsOptions] = useLocalStorage<SpeakSchema>('ttsModel', {
-    model: DEFAULT_TTS_MODEL
-  });
-  const [sttOptions, setSttOptions] = useLocalStorage<LiveSchema>('sttModel', {
-    model: DEFAULT_STT_MODEL,
-    interim_results: true,
-    smart_format: true,
-    endpointing: 350,
-    utterance_end_ms: 1000,
-    filler_words: true,
-  });
+  const [ttsOptions, setTtsOptions] = useLocalStorage<SpeakSchema | undefined>('ttsModel');
+  const [sttOptions, setSttOptions] = useLocalStorage<LiveSchema | undefined>('sttModel');
   const [connection, setConnection] = useState<LiveClient>();
   const [connecting, setConnecting] = useState<boolean>(false);
   const [connectionReady, setConnectionReady] = useState<boolean>(false);
 
-  const connect = useCallback(async () => {
-    if (!connection && !connecting) {
-      setConnecting(true);
+  const connect = useCallback(
+    async (defaultSttsOptions: SpeakSchema) => {
+      if (!connection && !connecting) {
+        setConnecting(true);
 
-      const connection = new LiveClient(
-        await getApiKey(),
-        {},
-        sttOptions
-      );
+        const connection = new LiveClient(await getApiKey(), {}, defaultSttsOptions);
 
-      setConnection(connection);
-      setConnecting(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connecting, connection]);
+        setConnection(connection);
+        setConnecting(false);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [connecting, connection]
+  );
 
   useEffect(() => {
     // it must be the first open of the page, let's set up the defaults
 
-    if (connection === undefined) {
-      connect();
+    // Why this is needed?, the requestTtsAudio of Conversation is wrapped in useCallback
+    // which has a dependency of ttsOptions model
+    // but the player inside the Nowplaying provider is set on mount, means
+    // the when the startAudio is called the player is undefined.
+
+    // This can be fixed in 3 ways:
+    // 1. set player as a dependency inside the useCallback of requestTtsAudio
+    // 2. change the code of react-nowplaying to use the ref mechanism
+    // 3. follow the old code to avoid any risk i.e., first ttsOptions is undefined
+    // and later when it gets set, it also update the requestTtsAudio callback.
+    if (ttsOptions === undefined) {
+      setTtsOptions(defaultTtsOptions);
     }
-  }, [connect, connection, sttOptions, ttsOptions]);
+
+    if (!sttOptions === undefined) {
+      setSttOptions(defaultSttsOptions);
+    }
+    if (connection === undefined) {
+      connect(defaultSttsOptions);
+    }
+  }, [connect, connection, setSttOptions, setTtsOptions, sttOptions, ttsOptions]);
 
   useEffect(() => {
     if (connection && connection?.getReadyState() !== undefined) {
