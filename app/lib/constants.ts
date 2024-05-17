@@ -106,7 +106,7 @@ export const greetings = [
     strings: [contextualHello()],
   },
   {
-    text: "%s! - Interested in the types of voices Deepgram's Aura has?",
+    text: "%s! - Interested in the types of voices Aitek's Aura has?",
     strings: [contextualHello()],
   },
   {
