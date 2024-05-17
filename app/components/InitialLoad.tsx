@@ -15,9 +15,14 @@ export const InitialLoad = ({ fn, connecting = true }: { fn: () => void, connect
           <h2 className="font-favorit mt-2 block font-bold text-xl text-gray-100">
             Welcome to Aitek&apos;s
             <br />
-            Voice Assistant's Model.
+            Voice Assistant&apos;s Model.
           </h2>
           <div className="flex justify-center mt-4">
+            <ul className="list-disc list-inside marker:text-[#13EF93]">
+              <li className="text-center">Alexis 2 Speech-to-Text</li>
+              <li className="text-center">Chat GPH-4.8 Vmod</li>
+              <li className="text-center">Alexis Text-to-Speech</li>
+            </ul>
           </div>
           <span className="mt-4 block font-semibold">
             <div className="bg-white text-black rounded px-6 md:px-8 py-3 font-semibold sm:w-fit sm:mx-auto opacity-90">
@@ -41,3 +46,4 @@ export const InitialLoad = ({ fn, connecting = true }: { fn: () => void, connect
     </>
   );
 };
+
