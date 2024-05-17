@@ -13,15 +13,15 @@ export const InitialLoad = ({ fn, connecting = true }: { fn: () => void, connect
           className="relative block w-full glass p-6 sm:p-8 lg:p-12 rounded-xl"
         >
           <h2 className="font-favorit mt-2 block font-bold text-xl text-gray-100">
-            Welcome to Deepgram&apos;s
+            Welcome to Aitek&apos;s
             <br />
-            AI Agent Tech Demo.
+            Voice Assistant's Model.
           </h2>
           <div className="flex justify-center mt-4">
             <ul className="list-disc list-inside marker:text-[#13EF93]">
-              <li className="text-center">Nova-2 Speech-to-Text</li>
-              <li className="text-center">OpenAI GPT-3.5 Turbo</li>
-              <li className="text-center">Aura Text-to-Speech</li>
+              <li className="text-center">Alexis 2 Speech-to-Text</li>
+              <li className="text-center">Chat GPH-4.8 Vmod</li>
+              <li className="text-center">Alexis Text-to-Speech</li>
             </ul>
           </div>
           <span className="mt-4 block font-semibold">
