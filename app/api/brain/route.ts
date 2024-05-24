@@ -6,6 +6,7 @@ import { OpenAIStream, StreamingTextResponse } from "ai";
 export const runtime = "edge";
 
 const openai = new OpenAI({
+  baseURL: "https://api.groq.com/openai/v1",
   apiKey: process.env.OPENAI_API_KEY!,
 });
 
@@ -17,7 +18,7 @@ export async function POST(req: Request) {
   // Request the OpenAI API for the response based on the prompt
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo-0125",
+      model: "llama3-8b-8192",
       stream: true,
       messages: messages,
     });
