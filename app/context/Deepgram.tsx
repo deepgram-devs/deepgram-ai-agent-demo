@@ -1,23 +1,9 @@
 "use client";
 
-import {
-  CreateProjectKeyResponse,
-  LiveClient,
-  LiveSchema,
-  LiveTranscriptionEvents,
-  SpeakSchema,
-} from "@deepgram/sdk";
-import {
-  Dispatch,
-  SetStateAction,
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { useToast } from "./Toast";
-import { useLocalStorage } from "../lib/hooks/useLocalStorage";
+import {CreateProjectKeyResponse, LiveClient, LiveSchema, LiveTranscriptionEvents, SpeakSchema,} from "@deepgram/sdk";
+import {createContext, useCallback, useContext, useEffect, useState,} from "react";
+import {useToast} from "./Toast";
+import {useLocalStorage} from "../lib/hooks/useLocalStorage";
 
 type DeepgramContext = {
   ttsOptions: SpeakSchema | undefined;
@@ -41,7 +27,7 @@ const defaultTtsOptions = {
   model: DEFAULT_TTS_MODEL
 }
 
-const defaultSttsOptions = {
+const defaultSttOptions = {
   model: DEFAULT_STT_MODEL,
   interim_results: true,
   smart_format: true,
@@ -61,7 +47,7 @@ const voices: {
     accent: string;
   };
 } = {
-  [DEFAULT_TTS_MODEL]: {
+  ['aura-asteria-en']: {
     name: "Asteria",
     avatar: "/aura-asteria-en.svg",
     language: "English",
@@ -191,11 +177,11 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
       setTtsOptions(defaultTtsOptions);
     }
 
-    if (!sttOptions === undefined) {
-      setSttOptions(defaultSttsOptions);
+    if (sttOptions === undefined) {
+      setSttOptions(defaultSttOptions);
     }
     if (connection === undefined) {
-      connect(defaultSttsOptions);
+      void connect(defaultSttOptions);
     }
   }, [connect, connection, setSttOptions, setTtsOptions, sttOptions, ttsOptions]);
 
@@ -214,7 +200,7 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
 
       connection.addListener(LiveTranscriptionEvents.Error, () => {
         toast(
-          "An unknown error occured. We'll attempt to reconnect to Deepgram."
+          "An unknown error occurred. We'll attempt to reconnect to Deepgram."
         );
         setConnectionReady(false);
         connection.removeAllListeners();
