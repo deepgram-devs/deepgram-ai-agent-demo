@@ -1,9 +1,16 @@
+import { verifyJWT } from "@/app/lib/authMiddleware";
 import { DeepgramError, createClient } from "@deepgram/sdk";
 import { NextResponse, type NextRequest } from "next/server";
 
 export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
+  // verify jwt token
+  const authResponse = verifyJWT(request);
+  if (authResponse.status !== 200) {
+    return authResponse;
+  }
+  
   // exit early so we don't request 70000000 keys while in devmode
   if (process.env.DEEPGRAM_ENV === "development") {
     return NextResponse.json({

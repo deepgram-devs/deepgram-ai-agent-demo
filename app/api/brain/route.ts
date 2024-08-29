@@ -1,5 +1,7 @@
 import OpenAI from "openai";
 import { OpenAIStream, StreamingTextResponse } from "ai";
+import { verifyJWT } from "@/app/lib/authMiddleware";
+import { NextRequest } from "next/server";
 
 // Optional, but recommended: run on the edge runtime.
 // See https://vercel.com/docs/concepts/functions/edge-functions
@@ -9,7 +11,12 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  // verify jwt token
+  const authResponse = verifyJWT(req);
+  if (authResponse.status !== 200) {
+    return authResponse;
+  }
   // Extract the `messages` from the body of the request
   const { messages } = await req.json();
   const start = Date.now();

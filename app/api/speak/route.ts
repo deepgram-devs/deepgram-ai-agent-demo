@@ -1,3 +1,4 @@
+import { verifyJWT } from "@/app/lib/authMiddleware";
 import { Message } from "ai";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -7,6 +8,11 @@ import { NextRequest, NextResponse } from "next/server";
  * @returns {Promise<NextResponse>} A NextResponse with the streamable response
  */
 export async function POST(req: NextRequest) {
+  // verify jwt token
+  const authResponse = verifyJWT(req);
+  if (authResponse.status !== 200) {
+    return authResponse;
+  }
   // gotta use the request object to invalidate the cache every request :vomit:
   const url = req.url;
   const model = req.nextUrl.searchParams.get("model") ?? "aura-asteria-en";
