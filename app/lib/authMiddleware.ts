@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import jwt from 'jsonwebtoken';
+
 import { config } from '../config';
+
 
 // verify token for protected route 
 export function verifyJWT(request: NextRequest) {
