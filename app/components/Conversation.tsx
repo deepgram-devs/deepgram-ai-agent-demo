@@ -28,6 +28,7 @@ import { useDeepgram } from "../context/Deepgram";
 import { useMessageData } from "../context/MessageMetadata";
 import { useMicrophone } from "../context/Microphone";
 import { useAudioStore } from "../context/AudioStore";
+import { useAuth } from "../context/Auth";
 
 /**
  * Conversation element that contains the conversational AI app.
@@ -37,6 +38,7 @@ export default function Conversation(): JSX.Element {
   /**
    * Custom context providers
    */
+  const { token, isAuthenticated } = useAuth();
   const { ttsOptions, connection, connectionReady } = useDeepgram();
   const { addAudio } = useAudioStore();
   const { player, stop: stopAudio, play: startAudio } = useNowPlaying();
@@ -75,10 +77,14 @@ export default function Conversation(): JSX.Element {
    */
   const requestTtsAudio = useCallback(
     async (message: Message) => {
+      if(!isAuthenticated) return;
       const start = Date.now();
       const model = ttsOptions?.model ?? "aura-asteria-en";
 
       const res = await fetch(`/api/speak?model=${model}`, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
         cache: "no-store",
         method: "POST",
         body: JSON.stringify(message),
@@ -99,7 +105,7 @@ export default function Conversation(): JSX.Element {
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [ttsOptions?.model]
+    [ttsOptions?.model, token]
   );
 
   const [llmNewLatency, setLlmNewLatency] = useState<{
@@ -154,6 +160,9 @@ export default function Conversation(): JSX.Element {
   } = useChat({
     id: "aura",
     api: "/api/brain",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     initialMessages: [systemMessage, greetingMessage],
     onFinish,
     onResponse,

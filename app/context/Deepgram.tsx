@@ -18,6 +18,7 @@ import {
 } from "react";
 import { useToast } from "./Toast";
 import { useLocalStorage } from "../lib/hooks/useLocalStorage";
+import { useAuth } from "./Auth";
 
 type DeepgramContext = {
   ttsOptions: SpeakSchema | undefined;
@@ -139,9 +140,14 @@ const voiceMap = (model: string) => {
   return voices[model];
 };
 
-const getApiKey = async (): Promise<string> => {
+const getApiKey = async (token:string): Promise<string> => {
   const result: CreateProjectKeyResponse = await (
-    await fetch("/api/authenticate", { cache: "no-store" })
+    await fetch("/api/authenticate", { 
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }, 
+      cache: "no-store" 
+    })
   ).json();
 
   return result.key;
@@ -149,6 +155,7 @@ const getApiKey = async (): Promise<string> => {
 
 const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
   const { toast } = useToast();
+  const {isAuthenticated, token, handleLogin} = useAuth();
   const [ttsOptions, setTtsOptions] = useLocalStorage<SpeakSchema | undefined>('ttsModel');
   const [sttOptions, setSttOptions] = useLocalStorage<LiveSchema | undefined>('sttModel');
   const [connection, setConnection] = useState<LiveClient>();
@@ -157,11 +164,12 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
 
   const connect = useCallback(
     async (defaultSttsOptions: SpeakSchema) => {
+      if(!isAuthenticated) return;
       if (!connection && !connecting) {
         setConnecting(true);
 
         const connection = new LiveClient(
-          await getApiKey(),
+          await getApiKey(token as string),
           {},
           defaultSttsOptions
         );
@@ -171,7 +179,7 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
-    [connecting, connection]
+    [connecting, connection, token]
   );
 
   useEffect(() => {

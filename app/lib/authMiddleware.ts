@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import jwt from 'jsonwebtoken';
-
-const secret = process.env.JWT_SECRET || 'deepgram-secret-123456';
+import { config } from '../config';
 
 // verify token for protected route 
 export function verifyJWT(request: NextRequest) {
@@ -14,7 +13,7 @@ export function verifyJWT(request: NextRequest) {
   const token = authHeader.split(' ')[1];
 
   try {
-    jwt.verify(token, secret);
+    jwt.verify(token, config.jwtSecret);
     return NextResponse.next();
   } catch (error) {
     return NextResponse.json({ message: 'Invalid or expired token' }, { status: 401 });
