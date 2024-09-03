@@ -16,3 +16,4 @@ export function verifyToken(token: string): JwtPayload | null {
     return null;
   }
 }
+

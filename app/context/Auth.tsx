@@ -2,7 +2,6 @@
 import { Spinner } from '@nextui-org/react';
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { toast } from 'react-toastify';
-import { verifyToken } from '../lib/jwt';
 
 interface AuthContextType {
   token: string | null;
@@ -13,6 +12,19 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+const verifyToken = async (token:string) => {
+  try{
+    const res = await fetch('/api/verify-token',{
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+    return res.json();
+  }catch(err){
+    return null;
+  }
+};
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
@@ -43,15 +55,16 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       setLoading(true);
       try{
         const savedToken = localStorage.getItem('jwtToken');
-        // saved token verification required || will add tomorrow 30-aug-2024
-
+        // saved token verification
         if (savedToken) {
+          // verifyToken(savedToken);
           setToken(savedToken);
         }else{
             handleLogin();
         }
       }catch(err:any){
-        toast.error(err?.message)
+        logout();
+        toast.error(err?.message);
       }
       setLoading(false);
     }
