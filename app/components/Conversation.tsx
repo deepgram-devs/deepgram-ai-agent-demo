@@ -77,13 +77,13 @@ export default function Conversation(): JSX.Element {
    */
   const requestTtsAudio = useCallback(
     async (message: Message) => {
-      if(!isAuthenticated) return;
+      if (!isAuthenticated) return;
       const start = Date.now();
       const model = ttsOptions?.model ?? "aura-asteria-en";
 
       const res = await fetch(`/api/speak?model=${model}`, {
         headers: {
-          Authorization: 'Bearer ' + token,
+          Authorization: "Bearer " + token,
         },
         cache: "no-store",
         method: "POST",
@@ -417,26 +417,26 @@ export default function Conversation(): JSX.Element {
   /**
    * keep deepgram connection alive when mic closed
    */
-  useEffect(() => {
-    let keepAlive: any;
-    if (connection && connectionReady && !microphoneOpen) {
-      keepAlive = setInterval(() => {
-        // should stop spamming dev console when working on frontend in devmode
-        if (connection?.getReadyState() !== LiveConnectionState.OPEN) {
-          clearInterval(keepAlive);
-        } else {
-          connection.keepAlive();
-        }
-      }, 10000);
-    } else {
-      clearInterval(keepAlive);
-    }
+  // useEffect(() => {
+  //   let keepAlive: any;
+  //   if (connection && connectionReady && !microphoneOpen) {
+  //     keepAlive = setInterval(() => {
+  //       // should stop spamming dev console when working on frontend in devmode
+  //       if (connection?.getReadyState() !== LiveConnectionState.OPEN) {
+  //         clearInterval(keepAlive);
+  //       } else {
+  //         connection.keepAlive();
+  //       }
+  //     }, 10000);
+  //   } else {
+  //     clearInterval(keepAlive);
+  //   }
 
-    // prevent duplicate timeouts
-    return () => {
-      clearInterval(keepAlive);
-    };
-  }, [connection, connectionReady, microphoneOpen]);
+  //   // prevent duplicate timeouts
+  //   return () => {
+  //     clearInterval(keepAlive);
+  //   };
+  // }, [connection, connectionReady, microphoneOpen]);
 
   // this works
   useEffect(() => {
@@ -461,7 +461,10 @@ export default function Conversation(): JSX.Element {
                 >
                   <div className="grid grid-cols-12 overflow-x-auto gap-y-2">
                     {initialLoad ? (
-                      <InitialLoad fn={startConversation} connecting={!connection} />
+                      <InitialLoad
+                        fn={startConversation}
+                        connecting={!connection}
+                      />
                     ) : (
                       <>
                         {chatMessages.length > 0 &&

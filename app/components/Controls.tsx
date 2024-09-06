@@ -24,13 +24,13 @@ export const Controls = ({
   input: string;
   handleSubmit: any;
   handleInputChange: any;
-  messages: Message[];
+  messages?: Message[];
 }) => {
   const { startMicrophone, stopMicrophone, microphoneOpen } = useMicrophone();
   const { formRef, onKeyDown } = useSubmit()
 
   useEffect(() => { 
-    startMicrophone();
+    // startMicrophone();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -65,7 +65,7 @@ export const Controls = ({
       <div className="relative">
         <div className="absolute w-full -top-[4.5rem] py-4 flex justify-between">
           <Settings />
-          <Download messages={messages} />
+          {/* <Download messages={messages} /> */}
         </div>
         <div className="flex bg-[#101014] rounded-full">
           <span

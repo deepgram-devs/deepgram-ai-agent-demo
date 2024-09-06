@@ -128,7 +128,7 @@ export const Settings = () => {
         <span className="hidden md:inline-block text-white/50 font-inter">
           Voice:{" "}
           <span className="text-white">
-            {voiceMap(ttsOptions?.model as string).name}
+            {voiceMap(ttsOptions?.model as string)?.name}
           </span>
         </span>
       </div>

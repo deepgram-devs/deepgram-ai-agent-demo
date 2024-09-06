@@ -2,6 +2,7 @@
 
 import {
   CreateProjectKeyResponse,
+  DeepgramClientOptions,
   LiveClient,
   LiveSchema,
   LiveTranscriptionEvents,
@@ -35,21 +36,14 @@ interface DeepgramContextInterface {
 
 const DeepgramContext = createContext({} as DeepgramContext);
 
-const DEFAULT_TTS_MODEL = 'aura-asteria-en';
-const DEFAULT_STT_MODEL = 'nova-2';
+const DEFAULT_TTS_MODEL = "aura-asteria-en";
+const DEFAULT_STT_MODEL = "nova-2";
 
 const defaultTtsOptions = {
-  model: DEFAULT_TTS_MODEL
-}
+  model: DEFAULT_TTS_MODEL,
+};
 
-const defaultSttsOptions = {
-  model: DEFAULT_STT_MODEL,
-  interim_results: true,
-  smart_format: true,
-  endpointing: 550,
-  utterance_end_ms: 1500,
-  filler_words: true,
-}
+const defaultSttsOptions = {};
 
 /**
  * TTS Voice Options
@@ -140,13 +134,13 @@ const voiceMap = (model: string) => {
   return voices[model];
 };
 
-const getApiKey = async (token:string): Promise<string> => {
+const getApiKey = async (token: string): Promise<string> => {
   const result: CreateProjectKeyResponse = await (
-    await fetch("/api/authenticate", { 
+    await fetch("/api/authenticate", {
       headers: {
-        'Authorization': `Bearer ${token}`,
-      }, 
-      cache: "no-store" 
+        Authorization: `Bearer ${token}`,
+      },
+      cache: "no-store",
     })
   ).json();
 
@@ -155,24 +149,26 @@ const getApiKey = async (token:string): Promise<string> => {
 
 const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
   const { toast } = useToast();
-  const {isAuthenticated, token, handleLogin} = useAuth();
-  const [ttsOptions, setTtsOptions] = useLocalStorage<SpeakSchema | undefined>('ttsModel');
-  const [sttOptions, setSttOptions] = useLocalStorage<LiveSchema | undefined>('sttModel');
+  const { isAuthenticated, token, handleLogin } = useAuth();
+  const [ttsOptions, setTtsOptions] = useLocalStorage<SpeakSchema | undefined>(
+    "ttsModel"
+  );
+  const [sttOptions, setSttOptions] = useLocalStorage<LiveSchema | undefined>(
+    "sttModel"
+  );
   const [connection, setConnection] = useState<LiveClient>();
   const [connecting, setConnecting] = useState<boolean>(false);
   const [connectionReady, setConnectionReady] = useState<boolean>(false);
 
   const connect = useCallback(
-    async (defaultSttsOptions: SpeakSchema) => {
-      if(!isAuthenticated) return;
+    async (defaultSttsOptions: DeepgramClientOptions) => {
+      if (!isAuthenticated) return;
       if (!connection && !connecting) {
         setConnecting(true);
 
-        const connection = new LiveClient(
-          await getApiKey(token as string),
-          {},
-          defaultSttsOptions
-        );
+        const connection = new LiveClient(await getApiKey(token as string), {
+          ...defaultSttsOptions,
+        });
 
         setConnection(connection);
         setConnecting(false);
@@ -205,7 +201,14 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
     if (connection === undefined) {
       connect(defaultSttsOptions);
     }
-  }, [connect, connection, setSttOptions, setTtsOptions, sttOptions, ttsOptions]);
+  }, [
+    connect,
+    connection,
+    setSttOptions,
+    setTtsOptions,
+    sttOptions,
+    ttsOptions,
+  ]);
 
   useEffect(() => {
     if (connection && connection?.getReadyState() !== undefined) {

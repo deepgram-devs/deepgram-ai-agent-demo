@@ -1,7 +1,5 @@
-import { Headphones } from "./Headphones";
-import { isBrowser } from "react-device-detect";
-import { Avatar, Select, SelectItem, Spinner } from "@nextui-org/react";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Avatar, Select, SelectItem } from "@nextui-org/react";
+import { Dispatch, SetStateAction } from "react";
 import { models, voices } from "../context/WebScoket";
 
 const arrayOfVoices = Object.entries(voices).map((e) => ({
@@ -24,23 +22,23 @@ const itemClasses = {
 };
 
 const classNames = {
-    base: "before:bg-default-200",
-    content: "p-0 border-small border-divider bg-background",
-  };
+  base: "before:bg-default-200",
+  content: "p-0 border-small border-divider bg-background",
+};
 
 export const VoiceSelection = ({
   model,
-  setModel,
+  setVoice,
 }: {
   model: string;
-  setModel: Dispatch<SetStateAction<string>>;
+  setVoice: Dispatch<SetStateAction<string>>;
 }) => {
   return (
     <Select
       defaultSelectedKeys={["aura-model-asteria"]}
       selectedKeys={[model]}
       onSelectionChange={(keys: any) =>
-        setModel(keys.entries().next().value[0])
+        setVoice(keys.entries().next().value[0])
       }
       items={arrayOfVoices}
       label="Selected voice"
@@ -55,7 +53,7 @@ export const VoiceSelection = ({
         itemClasses,
       }}
       popoverProps={{
-        classNames
+        classNames,
       }}
       renderValue={(items) => {
         return items.map((item) => (
@@ -98,7 +96,6 @@ export const VoiceSelection = ({
   );
 };
 
-
 export const ModelSelection = ({
   model,
   setModel,
@@ -126,7 +123,7 @@ export const ModelSelection = ({
         itemClasses,
       }}
       popoverProps={{
-        classNames
+        classNames,
       }}
       renderValue={(items) => {
         return items.map((item) => (
@@ -146,60 +143,11 @@ export const ModelSelection = ({
           <div className="flex gap-2 items-center">
             <div className="flex flex-col">
               <span className="text-small">{model.name}</span>
-              <span className="text-tiny text-default-400">
-                {model.value}
-              </span>
+              <span className="text-tiny text-default-400">{model.value}</span>
             </div>
           </div>
         </SelectItem>
       )}
     </Select>
-  );
-};
-
-export const InitialLoad = ({ fn, connecting = true }: { fn: () => void, connecting: boolean }) => {
-  const [selectedVoice, setSelectedVoice] = useState(arrayOfVoices[0]?.model);
-  const [selectedModel, setSelectedModel] = useState(models[0]?.value);
-
-  return (
-    <>
-      <div className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 md:col-start-3 md:col-end-11 lg:col-start-4 lg:col-end-10 p-3 mb-1/2">
-        <div
-          // disabled={connecting}
-          // onClick={() => !connecting && fn()}
-          // type="button"
-          className="relative block w-full glass p-6 sm:p-8 lg:p-12 rounded-xl"
-        >
-          <h2 className="font-favorit mt-2 block font-bold text-xl text-gray-100">
-            Welcome to Deepgram&apos;s
-            <br />
-            AI Agent Tech Demo.
-          </h2>
-          <div className=" mt-4 space-y-4">
-            <VoiceSelection model={selectedVoice} setModel={setSelectedVoice} />
-            <ModelSelection model={selectedModel} setModel={setSelectedModel} />
-          </div>
-          <span className="mt-4 block font-semibold">
-            <div className="bg-white text-black rounded px-6 md:px-8 py-3 font-semibold sm:w-fit sm:mx-auto opacity-90">
-              {connecting ? (
-                <div className="w-full h-full items-center flex justify-center opacity-40 cursor-not-allowed">
-                  <Spinner size={"sm"} className="-mt-1 mr-2" />
-                  Connecting...
-                </div>
-              ) : (
-                <div className="w-full h-full items-center flex justify-center opacity-40 cursor-not-allowed">
-                  Listening...
-                </div>
-              )}
-            </div>
-          </span>
-          <span className="mt-4 block text-sm text-gray-100/70">
-            <Headphones /> For optimal enjoyment, we recommend using headphones
-            while using this application. Minor bugs and annoyances may appear
-            while using this demo. Pull requests are welcome.
-          </span>
-        </div>
-      </div>
-    </>
   );
 };

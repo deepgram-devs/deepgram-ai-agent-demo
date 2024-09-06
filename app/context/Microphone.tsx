@@ -8,8 +8,10 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
+import { useWebSocketContext } from "./WebScoket";
 
 type MicrophoneContext = {
   microphone: MediaRecorder | undefined;
@@ -37,6 +39,9 @@ const MicrophoneContextProvider = ({
   const [microphone, setMicrophone] = useState<MediaRecorder>();
   const [stream, setStream] = useState<MediaStream>();
   const [microphoneOpen, setMicrophoneOpen] = useState(false);
+  const audioContextRef = useRef<AudioContext | null>(null);
+
+  const {sendMessage} = useWebSocketContext();
 
   const {
     add: enqueueBlob, // addMicrophoneBlob,
@@ -48,6 +53,9 @@ const MicrophoneContextProvider = ({
 
   useEffect(() => {
     async function setupMicrophone() {
+      const audioContext = new AudioContext();
+      audioContextRef.current = audioContext;
+
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           noiseSuppression: true,
@@ -56,10 +64,27 @@ const MicrophoneContextProvider = ({
       });
 
       setStream(stream);
+      const microphone = audioContextRef.current?.createMediaStreamSource(stream);
+        const processor = audioContextRef.current?.createScriptProcessor(4096, 1, 1);
 
-      const microphone = new MediaRecorder(stream);
+        processor.onaudioprocess = (event) => {
+          const inputData = event.inputBuffer.getChannelData(0);
+          const rms = Math.sqrt(
+            inputData.reduce((sum, value) => sum + value * value, 0) / inputData.length
+          );
 
-      setMicrophone(microphone);
+          // send message to socket
+          // sendMessage(inputData.buffer);
+          console.log("Message sent! askdfjdk");
+          // Update blob size based on audio level
+          // updateBlobSize(rms * 5); // Adjust the scaling factor as needed
+        };
+
+        microphone.connect(processor);
+        processor.connect(audioContextRef.current?.destination);
+      // const microphone = new MediaRecorder(stream);
+
+      // setMicrophone(microphone);
     }
 
     if (!microphone) {

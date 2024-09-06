@@ -57,7 +57,11 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         const savedToken = localStorage.getItem('jwtToken');
         // saved token verification
         if (savedToken) {
-          // verifyToken(savedToken);
+          // const isValid = verifyToken(savedToken);
+          // if(!isValid) {
+          //   logout();
+          //   return;
+          // };
           setToken(savedToken);
         }else{
             handleLogin();
