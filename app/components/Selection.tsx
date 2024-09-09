@@ -1,6 +1,6 @@
 import { Avatar, Select, SelectItem } from "@nextui-org/react";
 import { Dispatch, SetStateAction } from "react";
-import { models, voices } from "../context/WebScoket";
+import { models, voices } from "../lib/constants";
 
 const arrayOfVoices = Object.entries(voices).map((e) => ({
   ...e[1],

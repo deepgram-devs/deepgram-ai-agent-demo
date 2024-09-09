@@ -9,8 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 
 import type { Metadata, Viewport } from "next";
-import { AuthContextProvider } from "./context/Auth";
-import { WebSocketProvider } from "./context/WebScoket";
+import { WebSocketProvider } from "./context/WebSocketContext";
 
 const inter = Inter({ subsets: ["latin"] });
 const favorit = localFont({
@@ -48,11 +47,19 @@ export default function RootLayout({
           inter.className
         )}`}
       >
-        <AuthContextProvider>
-          <ToastContextProvider>
-            <WebSocketProvider>{children}</WebSocketProvider>
-          </ToastContextProvider>
-        </AuthContextProvider>
+        <ToastContextProvider>
+          {/* <MicrophoneContextProvider> */}
+          {/* <AudioStoreContextProvider> */}
+          {/* <NowPlayingContextProvider> */}
+          {/* <MessageMetadataContextProvider> */}
+          {/* <DeepgramContextProvider> */}
+          <WebSocketProvider>{children}</WebSocketProvider>
+          {/* </DeepgramContextProvider> */}
+          {/* </MessageMetadataContextProvider> */}
+          {/* </NowPlayingContextProvider> */}
+          {/* </AudioStoreContextProvider> */}
+          {/* </MicrophoneContextProvider> */}
+        </ToastContextProvider>
         <GoogleTagManager gtmId="GTM-5R73N627" />
         <Script
           id="github-buttons"

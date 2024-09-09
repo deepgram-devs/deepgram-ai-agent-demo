@@ -132,3 +132,117 @@ export const greetings = [
 ];
 
 export const silentMp3: string = `data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV`;
+
+/**
+ * Voice Options
+ */
+export const voices: {
+  [key: string]: {
+    name: string;
+    avatar: string;
+    language: string;
+    accent: string;
+  };
+} = {
+  "aura-asteria-en": {
+    name: "Asteria",
+    avatar: "/aura-asteria-en.svg",
+    language: "English",
+    accent: "US",
+  },
+  "aura-luna-en": {
+    name: "Luna",
+    avatar: "/aura-luna-en.svg",
+    language: "English",
+    accent: "US",
+  },
+  "aura-stella-en": {
+    name: "Stella",
+    avatar: "/aura-stella-en.svg",
+    language: "English",
+    accent: "US",
+  },
+  "aura-athena-en": {
+    name: "Athena",
+    avatar: "/aura-athena-en.svg",
+    language: "English",
+    accent: "UK",
+  },
+  "aura-hera-en": {
+    name: "Hera",
+    avatar: "/aura-hera-en.svg",
+    language: "English",
+    accent: "US",
+  },
+  "aura-orion-en": {
+    name: "Orion",
+    avatar: "/aura-orion-en.svg",
+    language: "English",
+    accent: "US",
+  },
+  "aura-arcas-en": {
+    name: "Arcas",
+    avatar: "/aura-arcas-en.svg",
+    language: "English",
+    accent: "US",
+  },
+  "aura-perseus-en": {
+    name: "Perseus",
+    avatar: "/aura-perseus-en.svg",
+    language: "English",
+    accent: "US",
+  },
+  "aura-angus-en": {
+    name: "Angus",
+    avatar: "/aura-angus-en.svg",
+    language: "English",
+    accent: "Ireland",
+  },
+  "aura-orpheus-en": {
+    name: "Orpheus",
+    avatar: "/aura-orpheus-en.svg",
+    language: "English",
+    accent: "US",
+  },
+  "aura-helios-en": {
+    name: "Helios",
+    avatar: "/aura-helios-en.svg",
+    language: "English",
+    accent: "UK",
+  },
+  "aura-zeus-en": {
+    name: "Zeus",
+    avatar: "/aura-zeus-en.svg",
+    language: "English",
+    accent: "US",
+  },
+};
+
+// models
+
+export const models = [
+  {
+    name: "Anthropic: Claude 3 Haiku",
+    value: "anthropic+claude-3-haiku-20240307",
+  },
+  {
+    name: "Deepgram: Llama 3 8b",
+    value: "deepgram+llama-3-8b-instruct",
+  },
+  {
+    name: "Groq: Llama 3 8b",
+    value: "groq+llama3-8b-8192",
+  },
+  {
+    name: "Groq: Llama 3 70b",
+    value: "groq+llama3-70b-8192",
+  },
+  {
+    name: "Groq: Mixtral 8x7b",
+    value: "groq+mixtral-8x7b-32768",
+  },
+  {
+    name: "OpenAI: GPT 4o",
+    value: "open_ai+gpt-4o",
+  },
+];

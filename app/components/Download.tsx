@@ -47,3 +47,29 @@ export const Download = ({ messages }: { messages: Message[] }) => {
     </div>
   );
 };
+
+export const DownloadAgent = ({
+  messages,
+}: {
+  messages: Record<string, any>[];
+}) => {
+  const context = messages
+    .filter((m) => ["user", "assistant"].includes(m.role))
+    .map((m) => {
+      if (m.role === "assistant") {
+        const voice = m?.model ? voiceMap(m?.model).name : "Deepgram";
+
+        return `${voice ?? "Asteria"}: ${m.content}`;
+      }
+
+      if (m.role === "user") {
+        return `User: ${m.content}`;
+      }
+    });
+
+  return (
+    <div className="flex items-center gap-2.5 text-sm">
+      <DownloadButton content={context.join("\n\n")} />
+    </div>
+  );
+};

@@ -25,7 +25,6 @@ export const RightBubble = ({
             </div>
           </div>
         </div>
-
       </div>
     </>
   );
