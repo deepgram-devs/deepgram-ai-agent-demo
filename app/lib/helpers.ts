@@ -1,4 +1,7 @@
-import { LiveTranscriptionEvent } from "@deepgram/sdk";
+import {
+  CreateProjectKeyResponse,
+  LiveTranscriptionEvent,
+} from "@deepgram/sdk";
 import { Message } from "ai/react";
 import moment from "moment";
 import { greetings } from "./constants";
@@ -51,13 +54,13 @@ function randomArrayValue(array: any[]): any {
   const key = Math.floor(Math.random() * array.length);
 
   return array[key];
-};
+}
 
 function contextualGreeting(): string {
   const greeting = randomArrayValue(greetings);
 
   return sprintf(greeting.text, ...greeting.strings);
-};
+}
 
 /**
  * @returns {string}
@@ -76,27 +79,43 @@ function contextualHello(): string {
   } else {
     return "Hello";
   }
-};
+}
 
 /**
  * Generate random string of alphanumerical characters.
- * 
+ *
  * @param {number} length this is the length of the string to return
  * @returns {string}
  */
 function generateRandomString(length: number): string {
-  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
+  let characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
 
   for (let i = 0; i < length; i++) {
-    let randomChar = characters.charAt(Math.floor(Math.random() * characters.length));
+    let randomChar = characters.charAt(
+      Math.floor(Math.random() * characters.length)
+    );
     result += randomChar;
   }
 
   return result;
 
-  return 'test';
+  return "test";
 }
+
+const getApiKey = async (token: string): Promise<string> => {
+  const result: CreateProjectKeyResponse = await (
+    await fetch("/api/authenticate", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      cache: "no-store",
+    })
+  ).json();
+
+  return result.key;
+};
 
 export {
   generateRandomString,
@@ -104,5 +123,6 @@ export {
   contextualHello,
   getUserMessages,
   getConversationMessages,
-  utteranceText
+  utteranceText,
+  getApiKey,
 };

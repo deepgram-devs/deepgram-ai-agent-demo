@@ -10,6 +10,8 @@ import React, {
   useCallback,
 } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
+import { getApiKey } from "../lib/helpers";
+import { useAuth } from "./Auth";
 
 // Types and Interfaces
 type Message = {
@@ -44,7 +46,6 @@ type WebSocketProviderProps = { children: ReactNode };
 // Constants
 const DEEPGRAM_SOCKET_URL = process.env
   .NEXT_PUBLIC_DEEPGRAM_SOCKET_URL as string;
-const DEEPGRAM_API_KEY = process.env.NEXT_PUBLIC_DEEPGRAM_API_KEY as string;
 const PING_INTERVAL = 10000; // 10s
 
 // Context Creation
@@ -62,6 +63,7 @@ const concatArrayBuffers = (buffer1: ArrayBuffer, buffer2: ArrayBuffer) => {
 
 // WebSocket Provider Component
 export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
+  const { token } = useAuth();
   // State
   const [connection, setConnection] = useState(false);
   const [voice, setVoice] = useState("aura-asteria-en");
@@ -73,6 +75,7 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
     `${DEEPGRAM_SOCKET_URL}?t=${Date.now()}`
   );
   const [startTime, setStartTime] = useState(0);
+  const [apiKey, setApiKey] = useState<string | null>(null);
 
   // Refs
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -106,7 +109,8 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
   const { sendMessage, lastMessage, readyState, getWebSocket } = useWebSocket(
     socketURL,
     {
-      protocols: ["token", DEEPGRAM_API_KEY],
+      // protocols: ["token", DEEPGRAM_API_KEY],
+      protocols: apiKey ? ["token", apiKey] : undefined,
       share: true,
       onOpen: () => {
         const socket = getWebSocket();
@@ -414,6 +418,30 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
   );
 
   // Effects
+
+  // Effect to fetch API key
+  useEffect(() => {
+    if (token) {
+      const fetchApiKey = async () => {
+        try {
+          const key = await getApiKey(token as string);
+          setApiKey(key);
+        } catch (error) {
+          console.error("Failed to fetch API key:", error);
+        }
+      };
+
+      fetchApiKey();
+    }
+  }, [token]);
+
+  // Effect to update socket URL when API key is available
+  useEffect(() => {
+    if (apiKey) {
+      setSocketUrl(`${DEEPGRAM_SOCKET_URL}?t=${Date.now()}`);
+    }
+  }, [apiKey]);
+
   useEffect(() => {
     const [provider, modelName] = model.split("+");
     const newSettings = {

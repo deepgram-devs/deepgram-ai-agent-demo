@@ -166,7 +166,8 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
       if (!connection && !connecting) {
         setConnecting(true);
 
-        const connection = new LiveClient(await getApiKey(token as string), {
+        const connection = new LiveClient({
+          key: await getApiKey(token as string),
           ...defaultSttsOptions,
         });
 
