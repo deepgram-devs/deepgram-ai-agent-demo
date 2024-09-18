@@ -46,7 +46,7 @@ type WebSocketProviderProps = { children: ReactNode };
 // Constants
 const DEEPGRAM_SOCKET_URL = process.env
   .NEXT_PUBLIC_DEEPGRAM_SOCKET_URL as string;
-const PING_INTERVAL = 10000; // 10s
+const PING_INTERVAL = 8000; // 8s
 
 // Context Creation
 const WebSocketContext = createContext<WebSocketContextValue | undefined>(
@@ -96,7 +96,9 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
     agent: {
       listen: { model: "nova-2" },
       think: {
-        provider: model.split("+")[0],
+        provider: {
+          type: model.split("+")[0],
+        },
         model: model.split("+")[1],
         instructions:
           "You are a helpful assistant who responds in 1-2 sentences at most each time.",
@@ -309,6 +311,20 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
     setStartTime(0);
   }, [startTime]);
 
+  // Utility functions
+  const startPingInterval = useCallback(() => {
+    pingIntervalRef.current = setInterval(() => {
+      sendMessage(JSON.stringify({ type: "KeepAlive" }));
+    }, PING_INTERVAL);
+  }, [sendMessage]);
+
+  const stopPingInterval = useCallback(() => {
+    if (pingIntervalRef.current) {
+      clearInterval(pingIntervalRef.current);
+      pingIntervalRef.current = null;
+    }
+  }, []);
+
   // Streaming functions
   const startStreaming = useCallback(async () => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -359,7 +375,7 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
       }
       setMicrophoneOpen(false);
     }
-  }, [sendMessage]);
+  }, [sendMessage, stopPingInterval]);
 
   const stopStreaming = useCallback(() => {
     if (processorRef.current) {
@@ -383,21 +399,7 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
     setConnection(false);
     setCurrentSpeaker(null);
     setMicrophoneOpen(false);
-  }, []);
-
-  // Utility functions
-  const startPingInterval = useCallback(() => {
-    pingIntervalRef.current = setInterval(() => {
-      sendMessage(JSON.stringify({ type: "KeepAlive" }));
-    }, PING_INTERVAL);
-  }, [sendMessage]);
-
-  const stopPingInterval = useCallback(() => {
-    if (pingIntervalRef.current) {
-      clearInterval(pingIntervalRef.current);
-      pingIntervalRef.current = null;
-    }
-  }, []);
+  }, [startPingInterval]);
 
   const updateVoice = useCallback(
     (newVoice: string) => {
@@ -448,7 +450,13 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
       ...configSettings,
       agent: {
         ...configSettings.agent,
-        think: { ...configSettings.agent.think, provider, model: modelName },
+        think: {
+          ...configSettings.agent.think,
+          provider: {
+            type: provider,
+          },
+          model: modelName,
+        },
         speak: { model: voice },
       },
     };

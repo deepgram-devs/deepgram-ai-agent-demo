@@ -1,33 +1,9 @@
-import { LeftBubble } from "./LeftBubble";
-import { Message } from "ai";
 import { RightBubble } from "./RightBubble";
 import { DgSvg } from "./DgSvg";
 import { TextContent } from "./TextContext";
 import { AgentMessageHeader } from "./MessageHeader";
 import { AgentMessageAudio } from "./MessageAudio";
 import { Avatar } from "@nextui-org/react";
-import { voiceMap } from "../context/Deepgram";
-
-function isUserMessage(message: any): message is Message {
-  return message.role === "user";
-}
-
-function isAssistantMessage(message: any): message is Message {
-  return message.role === "assistant";
-}
-
-export const ChatBubble = ({ message }: { message: any }) => {
-  if (isUserMessage(message)) {
-    // chat user
-    return <RightBubble message={message} />;
-  } else if (isAssistantMessage(message)) {
-    // chat assistant
-    return <LeftBubble message={message} />;
-  } else {
-    // other as-yet unlabelled messages
-    return <></>;
-  }
-};
 
 export const AgentChatBubble = ({ message }: { message: any }) => {
   if (message?.role === "user") {
@@ -42,7 +18,7 @@ export const AgentChatBubble = ({ message }: { message: any }) => {
             <div className="flex items-start gap-2 flex-col md:flex-row max-w-full md:max-w-none">
               <div className="min-w-12 text-white shrink-0">
                 {message?.voice ? (
-                  <Avatar src={voiceMap(message?.voice).avatar} />
+                  <Avatar src={"/aura-asteria-en.svg"} />
                 ) : (
                   <DgSvg />
                 )}
@@ -60,13 +36,10 @@ export const AgentChatBubble = ({ message }: { message: any }) => {
               <div className="h-6 w-6 shrink-0">
                 <AgentMessageAudio message={message} />
               </div>
-              {/* <MessageMeta className="md:hidden" message={message} /> */}
             </div>
           </div>
         </div>
-        <div className="hidden col-start-1 col-end-13 md:px-3 pb-3 md:flex gap-2">
-          {/* <MessageMeta className="md:ml-14" message={message} /> */}
-        </div>
+        <div className="hidden col-start-1 col-end-13 md:px-3 pb-3 md:flex gap-2"></div>
       </>
     );
   }

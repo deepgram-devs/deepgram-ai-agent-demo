@@ -6,8 +6,10 @@ import React, {
   useState,
   useEffect,
   ReactNode,
+  useCallback,
 } from "react";
 import { toast } from "react-toastify";
+import cookie from "js-cookie";
 
 interface AuthContextType {
   token: string | null;
@@ -19,55 +21,37 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const verifyToken = async (token: string) => {
-  try {
-    const res = await fetch("/api/verify-token", {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
-    return res.json();
-  } catch (err) {
-    return null;
-  }
-};
-
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(false);
 
   const login = (newToken: string) => {
-    localStorage.setItem("jwtToken", newToken);
+    cookie.set("dipjwtToken", newToken, { expires: 4 / 24 });
     setToken(newToken);
   };
 
-  const handleLogin = async () => {
+  const handleLogin = useCallback(async () => {
     // API route that generates the JWT token
     const response = await fetch("/api/generate-token", {
       method: "POST",
     });
     const data = await response.json();
     login(data.token);
-  };
+  }, []);
 
   const logout = () => {
-    localStorage.removeItem("jwtToken");
+    cookie.remove("dipjwtToken");
     setToken(null);
   };
 
   useEffect(() => {
-    // Load token from localStorage when the app initializes
+    // Load token from cookies when the app initializes
     const loadToken = () => {
       setLoading(true);
       try {
-        const savedToken = localStorage.getItem("jwtToken");
+        const savedToken = cookie.get("dipjwtToken");
         // saved token verification
         if (savedToken) {
-          // const isValid = verifyToken(savedToken);
-          // if(!isValid) {
-          //   logout();
-          //   return;
-          // };
           setToken(savedToken);
         } else {
           handleLogin();
@@ -79,7 +63,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
     };
     loadToken();
-  }, []);
+  }, [handleLogin]);
 
   const isAuthenticated = !!token;
 

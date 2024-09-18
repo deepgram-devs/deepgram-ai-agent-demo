@@ -1,11 +1,10 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-
-import { AgentChatBubble, ChatBubble } from "./ChatBubble";
 import { useWebSocketContext } from "../context/WebSocketContext";
 import { AgentControls } from "./AgentControls";
 import { InitialLoadAgent } from "./InitialLoadAgent";
 import { NextUIProvider } from "@nextui-org/react";
+import { AgentChatBubble } from "./ChatBubble";
 
 /**
  * Conversation element that contains the conversational AI app.
@@ -61,11 +60,6 @@ export default function ConversationAgent(): JSX.Element {
                           chatMessages.map((message, i) => (
                             <AgentChatBubble message={message} key={i} />
                           ))}
-
-                        {/* {currentUtterance && (
-                          <RightBubble text={currentUtterance}></RightBubble>
-                        )} */}
-
                         <div
                           className="h-16 col-start-1 col-end-13"
                           ref={messageMarker}

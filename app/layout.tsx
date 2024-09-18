@@ -49,19 +49,9 @@ export default function RootLayout({
         )}`}
       >
         <ToastContextProvider>
-          {/* <MicrophoneContextProvider> */}
-          {/* <AudioStoreContextProvider> */}
-          {/* <NowPlayingContextProvider> */}
-          {/* <MessageMetadataContextProvider> */}
-          {/* <DeepgramContextProvider> */}
           <AuthContextProvider>
             <WebSocketProvider>{children}</WebSocketProvider>
           </AuthContextProvider>
-          {/* </DeepgramContextProvider> */}
-          {/* </MessageMetadataContextProvider> */}
-          {/* </NowPlayingContextProvider> */}
-          {/* </AudioStoreContextProvider> */}
-          {/* </MicrophoneContextProvider> */}
         </ToastContextProvider>
         <GoogleTagManager gtmId="GTM-5R73N627" />
         <Script
