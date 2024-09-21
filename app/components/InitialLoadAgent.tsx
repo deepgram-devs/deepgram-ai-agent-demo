@@ -2,7 +2,13 @@ import { Headphones } from "./Headphones";
 import { isBrowser } from "react-device-detect";
 import { Spinner } from "@nextui-org/react";
 
-export const InitialLoad = ({ fn, connecting = true }: { fn: () => void, connecting: boolean }) => {
+export const InitialLoadAgent = ({
+  fn,
+  connecting = true,
+}: {
+  fn: () => void;
+  connecting: boolean;
+}) => {
   return (
     <>
       <div className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 md:col-start-3 md:col-end-11 lg:col-start-4 lg:col-end-10 p-3 mb-1/2">
@@ -20,7 +26,7 @@ export const InitialLoad = ({ fn, connecting = true }: { fn: () => void, connect
           <div className="flex justify-center mt-4">
             <ul className="list-disc list-inside marker:text-[#13EF93]">
               <li className="text-center">Nova-2 Speech-to-Text</li>
-              <li className="text-center">OpenAI GPT-3.5 Turbo</li>
+              <li className="text-center">Anthropic Claude 3 Haiku</li>
               <li className="text-center">Aura Text-to-Speech</li>
             </ul>
           </div>

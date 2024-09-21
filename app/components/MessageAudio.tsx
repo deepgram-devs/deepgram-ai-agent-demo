@@ -1,67 +1,111 @@
-import { Message } from "ai/react";
-import { Spinner } from "@nextui-org/react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import { useAudioStore } from "../context/AudioStore";
-import { useNowPlaying } from "react-nowplaying";
-
-const MessageAudio = ({
-  message: { id },
+const AgentMessageAudio = ({
+  message,
   className = "",
   ...rest
 }: {
-  message: Message;
+  message: { id: string; audio: ArrayBuffer };
   className?: string;
 }) => {
-  const { audioStore } = useAudioStore();
-  const { player, uid, resume: resumeAudio, play: playAudio } = useNowPlaying();
   const [playing, setPlaying] = useState(false);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const sourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
 
-  const found = useMemo(() => {
-    return audioStore.find((item) => item.id === id);
-  }, [audioStore, id]);
-
-  useEffect(() => {
-    setPlaying(uid === id);
-  }, [uid, id]);
-
-  const pause = useCallback(() => {
-    if (!player) return;
-
-    player.pause();
-    setPlaying(false);
-  }, [player]);
-
-  const play = useCallback(() => {
-    if (!player || !found) return;
-
-    if (uid === found.id) {
-      resumeAudio();
-    } else if (found) {
-      playAudio(found.blob, "audio/mp3", id);
+  const replayAudio = useCallback((audioData: ArrayBuffer) => {
+    // Stop any existing playback
+    if (sourceNodeRef.current) {
+      sourceNodeRef.current.stop();
+      sourceNodeRef.current.disconnect();
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close().catch(console.log);
     }
 
+    // Create a new AudioContext
+    const audioContext = new (window.AudioContext ||
+      window.webkitAudioContext)();
+    audioContextRef.current = audioContext;
+
+    const audioDataView = new Int16Array(audioData);
+
+    if (audioDataView.length === 0) {
+      console.error("Received audio data is empty.");
+      audioContext.close().catch(console.log);
+      return;
+    }
+
+    const audioBuffer = audioContext.createBuffer(
+      1,
+      audioDataView.length,
+      48000
+    );
+    const audioBufferChannel = audioBuffer.getChannelData(0);
+
+    for (let i = 0; i < audioDataView.length; i++) {
+      audioBufferChannel[i] = audioDataView[i] / 32768; // Convert linear16 PCM to float [-1, 1]
+    }
+
+    const source = audioContext.createBufferSource();
+    sourceNodeRef.current = source;
+    source.buffer = audioBuffer;
+    source.connect(audioContext.destination);
+
+    source.onended = () => {
+      setPlaying(false);
+      source.disconnect();
+      audioContext.close().catch((error) => {
+        console.error("Error closing AudioContext:", error);
+      });
+    };
+
+    source.start();
     setPlaying(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uid, found, id]);
+  }, []);
 
-  /**
-   * Spinner if still waiting for a response
-   */
-  if (!found) {
-    return <Spinner size={`sm`} />;
-  }
+  const play = useCallback(() => {
+    if (message.audio) {
+      replayAudio(message.audio);
+    }
+  }, [message.audio, replayAudio]);
 
-  /**
-   * Pause button
-   *
-   * audio === this message
-   * AND
-   * playing === true
-   */
+  const pause = useCallback(() => {
+    if (sourceNodeRef.current) {
+      sourceNodeRef.current.stop();
+      sourceNodeRef.current.disconnect();
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close().catch((error) => {
+        console.error("Error closing AudioContext:", error);
+      });
+    }
+    setPlaying(false);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      // Clean up audio playback when component unmounts
+      if (sourceNodeRef.current) {
+        sourceNodeRef.current.stop();
+        sourceNodeRef.current.disconnect();
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close().catch((error) => {
+          console.error("Error closing AudioContext:", error);
+        });
+      }
+    };
+  }, []);
+
   if (playing) {
     return (
-      <a href="#" onClick={() => pause!()}>
+      <a
+        href="#"
+        onClick={(e) => {
+          e.preventDefault();
+          pause();
+        }}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -78,16 +122,15 @@ const MessageAudio = ({
     );
   }
 
-  /**
-   * Play button
-   *
-   * audio !== this message
-   * OR
-   * paused === true
-   */
   if (!playing) {
     return (
-      <a href="#" onClick={() => play()}>
+      <a
+        href="#"
+        onClick={(e) => {
+          e.preventDefault();
+          play();
+        }}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -104,7 +147,7 @@ const MessageAudio = ({
     );
   }
 
-  return <></>;
+  return null;
 };
 
-export { MessageAudio };
+export { AgentMessageAudio };

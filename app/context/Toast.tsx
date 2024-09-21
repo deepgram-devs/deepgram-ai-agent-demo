@@ -1,7 +1,7 @@
 "use client";
 
 import { Bounce, ToastContainer, toast } from "react-toastify";
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext } from "react";
 import "react-toastify/dist/ReactToastify.css";
 
 type ToastContext = {
@@ -26,7 +26,9 @@ const ToastContextProvider = ({ children }: ToastContextInterface) => {
           limit={1}
           transition={Bounce}
           className={"md:w-96 mb-26"}
-          progressClassName={"bg-gradient-to-r bg-gradient to-[#13EF93]/50 from-[#149AFB]/80"}
+          progressClassName={
+            "bg-gradient-to-r bg-gradient to-[#13EF93]/50 from-[#149AFB]/80"
+          }
         />
       </>
     </ToastContext.Provider>

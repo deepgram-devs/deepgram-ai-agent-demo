@@ -1,20 +1,16 @@
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Inter } from "next/font/google";
-import { NowPlayingContextProvider } from "react-nowplaying";
 import classNames from "classnames";
 import localFont from "next/font/local";
 import Script from "next/script";
-
-import { DeepgramContextProvider } from "./context/Deepgram";
-import { MessageMetadataContextProvider } from "./context/MessageMetadata";
-import { MicrophoneContextProvider } from "./context/Microphone";
-import { AudioStoreContextProvider } from "./context/AudioStore";
 import { ToastContextProvider } from "./context/Toast";
 
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 
 import type { Metadata, Viewport } from "next";
+import { WebSocketProvider } from "./context/WebSocketContext";
+import { AuthContextProvider } from "./context/Auth";
 
 const inter = Inter({ subsets: ["latin"] });
 const favorit = localFont({
@@ -53,15 +49,9 @@ export default function RootLayout({
         )}`}
       >
         <ToastContextProvider>
-          <MicrophoneContextProvider>
-            <AudioStoreContextProvider>
-              <NowPlayingContextProvider>
-                <MessageMetadataContextProvider>
-                  <DeepgramContextProvider>{children}</DeepgramContextProvider>
-                </MessageMetadataContextProvider>
-              </NowPlayingContextProvider>
-            </AudioStoreContextProvider>
-          </MicrophoneContextProvider>
+          <AuthContextProvider>
+            <WebSocketProvider>{children}</WebSocketProvider>
+          </AuthContextProvider>
         </ToastContextProvider>
         <GoogleTagManager gtmId="GTM-5R73N627" />
         <Script

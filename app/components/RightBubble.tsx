@@ -1,5 +1,4 @@
 import { Message } from "ai/react";
-import { MessageMeta } from "./MessageMeta";
 import { TextContent } from "./TextContext";
 import { UserAvatar } from "./UserAvatar";
 
@@ -25,7 +24,6 @@ export const RightBubble = ({
             </div>
           </div>
         </div>
-
       </div>
     </>
   );

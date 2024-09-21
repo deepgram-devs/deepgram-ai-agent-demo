@@ -1,3 +1,4 @@
+import { config } from "@/app/config";
 import { verifyJWT } from "@/app/lib/authMiddleware";
 import { DeepgramError, createClient } from "@deepgram/sdk";
 import { NextResponse, type NextRequest } from "next/server";
@@ -14,13 +15,13 @@ export async function GET(request: NextRequest) {
   // exit early so we don't request 70000000 keys while in devmode
   if (process.env.DEEPGRAM_ENV === "development") {
     return NextResponse.json({
-      key: process.env.DEEPGRAM_API_KEY ?? "",
+      key: config.deepGramApiKey ?? "",
     });
   }
 
   // gotta use the request object to invalidate the cache every request :vomit:
   const url = request.url;
-  const deepgram = createClient(process.env.DEEPGRAM_API_KEY ?? "");
+  const deepgram = createClient(config.deepGramApiKey ?? "");
 
   let { result: projectsResult, error: projectsError } =
     await deepgram.manage.getProjects();
