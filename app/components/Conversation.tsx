@@ -33,7 +33,7 @@ import { useAudioStore } from "../context/AudioStore";
  * Conversation element that contains the conversational AI app.
  * @returns {JSX.Element}
  */
-export default function Conversation(): JSX.Element {
+export function Conversation(): JSX.Element {
   /**
    * Custom context providers
    */
@@ -440,50 +440,38 @@ export default function Conversation(): JSX.Element {
 
   return (
     <>
-      <NextUIProvider className="h-full">
-        <div className="flex h-full antialiased">
-          <div className="flex flex-row h-full w-full overflow-x-hidden">
-            <div className="flex flex-col flex-auto h-full">
-              <div className="flex flex-col justify-between h-full">
-                <div
-                  className={`flex flex-col h-full overflow-hidden ${
-                    initialLoad ? "justify-center" : "justify-end"
-                  }`}
-                >
-                  <div className="grid grid-cols-12 overflow-x-auto gap-y-2">
-                    {initialLoad ? (
-                      <InitialLoad fn={startConversation} connecting={!connection} />
-                    ) : (
-                      <>
-                        {chatMessages.length > 0 &&
-                          chatMessages.map((message, i) => (
-                            <ChatBubble message={message} key={i} />
-                          ))}
+      <NextUIProvider className="h-full flex flex-col max-h-full overflow-y-auto">
+        <div className="flex-grow flex flex-col justify-end max-h-full overflow-y-auto">
+          <div className="grid grid-cols-12 gap-y-2">
+            {initialLoad ? (
+              <InitialLoad fn={startConversation} connecting={!connection} />
+            ) : (
+              <>
+                {chatMessages.length > 0 &&
+                  chatMessages.map((message, i) => (
+                    <ChatBubble message={message} key={i} />
+                  ))}
 
-                        {currentUtterance && (
-                          <RightBubble text={currentUtterance}></RightBubble>
-                        )}
-
-                        <div
-                          className="h-16 col-start-1 col-end-13"
-                          ref={messageMarker}
-                        ></div>
-                      </>
-                    )}
-                  </div>
-                </div>
-                {!initialLoad && (
-                  <Controls
-                    messages={chatMessages}
-                    handleSubmit={handleSubmit}
-                    handleInputChange={handleInputChange}
-                    input={input}
-                  />
+                {currentUtterance && (
+                  <RightBubble text={currentUtterance}></RightBubble>
                 )}
-              </div>
-            </div>
+
+                <div
+                  className="h-16 col-start-1 col-end-13"
+                  ref={messageMarker}
+                ></div>
+              </>
+            )}
           </div>
         </div>
+        {!initialLoad && (
+          <Controls
+            messages={chatMessages}
+            handleSubmit={handleSubmit}
+            handleInputChange={handleInputChange}
+            input={input}
+          />
+        )}
       </NextUIProvider>
     </>
   );
