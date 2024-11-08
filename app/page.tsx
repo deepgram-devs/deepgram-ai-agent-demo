@@ -19,6 +19,13 @@ export default function Home() {
   return (
     <>
       <div className="h-full overflow-hidden">
+        {/* height 2rem */}
+        <div className="pb-1 bg-gradient-to-r bg-gradient to-[#13EF93] from-[#149AFB]">
+          <div className="bg-white text-black h-[1.75rem] text-xs font-bold flex items-center justify-center ">
+            <span>For our original STT + LLM + TTS version of Emily AI, <a href="https://emilyai-v1.deepgram.com" className="text-[#1470fb]">click here</a>.</span>
+          </div>
+        </div>
+
         {/* height 4rem */}
         <div className="bg-gradient-to-b from-black/50 to-black/10 backdrop-blur-[2px] h-[4rem] flex items-center">
           <header className="mx-auto w-full max-w-7xl px-4 md:px-6 lg:px-8 flex items-center justify-between pt-4 md:pt-0 gap-2">
@@ -60,8 +67,8 @@ export default function Home() {
           </header>
         </div>
 
-        {/* height 100% minus 8rem */}
-        <main className="mx-auto max-w-7xl  px-4 md:px-6 lg:px-8 h-[calc(100%-8rem)]">
+        {/* height 100% minus 10rem */}
+        <main className="mx-auto max-w-7xl  px-4 md:px-6 lg:px-8 h-[calc(100%-10rem)]">
           <ConversationAgent />
         </main>
 
