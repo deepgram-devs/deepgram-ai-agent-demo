@@ -115,6 +115,7 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
       protocols: apiKey ? ["token", apiKey] : undefined,
       share: true,
       onOpen: () => {
+        console.log(apiKey);
         const socket = getWebSocket();
         if (socket instanceof WebSocket) {
           socket.binaryType = "arraybuffer";
@@ -124,6 +125,7 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
         startPingInterval();
       },
       onError: (error) => {
+        console.log(apiKey);
         console.error("WebSocket error:", error);
         stopPingInterval();
       },
@@ -137,8 +139,9 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
   function handleWebSocketMessage(event: MessageEvent) {
     if (typeof event.data === "string") {
       const msgObj = JSON.parse(event.data);
-      console.log(msgObj);
-      switch (msgObj.type) {
+      const { type: messageType } = msgObj;
+
+      switch (messageType) {
         case "UserStartedSpeaking":
           setCurrentSpeaker("user");
           clearScheduledAudio();

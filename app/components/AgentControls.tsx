@@ -44,7 +44,7 @@ export const AgentControls = () => {
       </div>
       <div className="flex bg-[#101014] rounded-full justify-center">
         <span
-          className={`rounded-full ps-0.5 py-0.5 ${
+          className={`rounded-full p-0.5 ${
             microphoneOpen
               ? "bg-gradient-to-r bg-gradient to-[#13EF93]/50 from-red-500"
               : "bg-gradient-to-r bg-gradient to-[#13EF93]/50 from-[#149AFB]/80"
