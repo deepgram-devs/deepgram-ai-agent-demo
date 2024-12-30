@@ -11,10 +11,11 @@ export async function POST(req: NextRequest) {
   const url = req.url;
   let model = req.nextUrl.searchParams.get("model") ?? "30";
   let params = '';
-  if(model.indexOf('_old') != -1){
-    model = model.substring(0, model.length - 4);
-    params = '&model=old';
-  }
+  // if(model.indexOf('_old') != -1){
+  //   model = model.substring(0, model.length - 4);
+  //   params = '&model=old';
+  // }
+  params = '&model=ja-codec';
   console.log('XXX Model: ', model);
   const message: Message = await req.json();
   const start = Date.now();
@@ -42,8 +43,8 @@ export async function POST(req: NextRequest) {
       method: "POST",
       body: JSON.stringify({  }),
       headers: {
-        // "Content-Type": `application/json`,
-        // Authorization: `token ${process.env.DEEPGRAM_API_KEY || ""}`,
+        "Content-Type": `application/json`,
+        Authorization: `token ${process.env.DEEPGRAM_API_KEY || ""}`,
         // "X-DG-Referrer": url,
       },
     }

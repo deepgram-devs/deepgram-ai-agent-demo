@@ -85,10 +85,12 @@ export default function Conversation(): JSX.Element {
     async (message: Message) => {
       const start = Date.now();
       
-      let model = ttsOptions?.model ?? "28";
+      let model = ttsOptions?.model ?? "30";
 
-      if(prompt == '2' || prompt == '3' && (!voice || voice == '')){
-        model = '254_old';
+      if(prompt == '2' && (!voice || voice == '')){
+        model = '31';
+      } if(prompt == '3' && (!voice || voice == '')){
+        model = '47';
       }
 
       if(voice && voice != ''){
