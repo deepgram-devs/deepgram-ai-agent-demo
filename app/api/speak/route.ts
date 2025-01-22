@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
     );
 
   return await fetch(
-    `https://tts.sandbox.deepgram.com/speak?text=${text}&speaker=${model}${params}`,
+    `https://tts.sandbox.deepgram.com/stream?text=${text}&speaker=${model}${params}`,
     {
       method: "POST",
       body: JSON.stringify({  }),
