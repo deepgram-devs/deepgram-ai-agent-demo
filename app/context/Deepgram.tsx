@@ -34,7 +34,7 @@ interface DeepgramContextInterface {
 
 const DeepgramContext = createContext({} as DeepgramContext);
 
-const DEFAULT_TTS_MODEL = '30';
+const DEFAULT_TTS_MODEL = '31';
 const DEFAULT_STT_MODEL = 'nova-2-softbank';
 
 const defaultTtsOptions = {
@@ -78,9 +78,15 @@ const voices: {
 222 (Devante Teerink) - Male
 264 - Female
   */
- "30": {
+ "28": {
+    name: "Voice 28 - Female *",
+    avatar: "/aura-asteria-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "30": {
     name: "Voice 30 - Female *",
-    avatar: "/aura-stella-en.svg",
+    avatar: "/aura-asteria-en.svg",
     language: "Japanese",
     accent: "JA",
   },
@@ -92,6 +98,114 @@ const voices: {
   },
   "47": {
     name: "Voice 47 - Male *",
+    avatar: "/aura-angus-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "240": {
+    name: "Voice 240 - Male *",
+    avatar: "/aura-angus-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "241": {
+    name: "Voice 241 - Male *",
+    avatar: "/aura-angus-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "242": {
+    name: "Voice 242 - Female *",
+    avatar: "/aura-asteria-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "243": {
+    name: "Voice 243 - Female *",
+    avatar: "/aura-asteria-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "244": {
+    name: "Voice 244 - Female *",
+    avatar: "/aura-asteria-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "245": {
+    name: "Voice 245 - Female *",
+    avatar: "/aura-asteria-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "246": {
+    name: "Voice 246 - Female *",
+    avatar: "/aura-asteria-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "247": {
+    name: "Voice 247 - Female *",
+    avatar: "/aura-asteria-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "250": {
+    name: "Voice 250 - Female *",
+    avatar: "/aura-asteria-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "251": {
+    name: "Voice 251 - Female *",
+    avatar: "/aura-asteria-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "252": {
+    name: "Voice 252 - Female *",
+    avatar: "/aura-asteria-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "253": {
+    name: "Voice 253 - Female *",
+    avatar: "/aura-asteria-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "256": {
+    name: "Voice 256 - Male *",
+    avatar: "/aura-angus-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "257": {
+    name: "Voice 257 - Male *",
+    avatar: "/aura-angus-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "258": {
+    name: "Voice 258 - Male *",
+    avatar: "/aura-angus-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "259": {
+    name: "Voice 259 - Male *",
+    avatar: "/aura-angus-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "260": {
+    name: "Voice 259 - Male *",
+    avatar: "/aura-angus-en.svg",
+    language: "Japanese",
+    accent: "JA",
+  },
+  "261": {
+    name: "Voice 261 - Male *",
     avatar: "/aura-angus-en.svg",
     language: "Japanese",
     accent: "JA",
