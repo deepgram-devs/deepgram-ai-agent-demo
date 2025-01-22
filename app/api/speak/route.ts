@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
   //   model = model.substring(0, model.length - 4);
   //   params = '&model=old';
   // }
-  params = '&model=ja-codec';
+  params = '&model=ja-codec&temperature=0.6&repetition_penalty=5';
   console.log('XXX Model: ', model);
   const message: Message = await req.json();
   const start = Date.now();
