@@ -14,9 +14,18 @@ export async function POST(req: NextRequest) {
   // if(model.indexOf('_old') != -1){
   //   model = model.substring(0, model.length - 4);
   //   params = '&model=old';
-  // }
-  
-  params = '&model=ja-codec';
+
+  params = '&model=ja-codec' + 
+        '&temperature=0.6' + 
+        '&repetition_penalty=5.0' +  // Changed from 5.0 to match Python
+        '&do_sample=true' +          // Added from Python
+        '&max_new_tokens=512'; 
+
+  const chunkSize = req.nextUrl.searchParams.get("chunk_size");
+  if (chunkSize) {
+    params += `&chunk_size=${chunkSize}`;
+  }
+
   console.log('XXX Model: ', model);
   const message: Message = await req.json();
   const start = Date.now();
