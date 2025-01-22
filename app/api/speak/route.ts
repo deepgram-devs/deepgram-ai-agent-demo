@@ -11,11 +11,15 @@ export async function POST(req: NextRequest) {
   const url = req.url;
   let model = req.nextUrl.searchParams.get("model") ?? "30";
   let params = '';
+  params = '&model=ja-codec' + 
+          '&temperature=0.6' + 
+          '&repetition_penalty=1.0' +
+          '&do_sample=true' +
+          '&max_new_tokens=512';
   // if(model.indexOf('_old') != -1){
   //   model = model.substring(0, model.length - 4);
   //   params = '&model=old';
   // }
-  params = '&model=ja-codec&temperature=0.6&repetition_penalty=5';
   console.log('XXX Model: ', model);
   const message: Message = await req.json();
   const start = Date.now();
