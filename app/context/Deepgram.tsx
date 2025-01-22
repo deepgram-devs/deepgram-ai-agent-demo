@@ -199,7 +199,7 @@ const voices: {
     accent: "JA",
   },
   "260": {
-    name: "Voice 259 - Male *",
+    name: "Voice 260 - Male *",
     avatar: "/aura-angus-en.svg",
     language: "Japanese",
     accent: "JA",
