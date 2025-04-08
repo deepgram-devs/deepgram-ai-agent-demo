@@ -67,7 +67,7 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
   const { token } = useAuth();
   // State
   const [connection, setConnection] = useState(false);
-  const [voice, setVoice] = useState("aura-asteria-en");
+  const [voice, setVoice] = useState("aura-2-thalia-en");
   const [model, setModel] = useState("anthropic+claude-3-haiku-20240307");
   const [currentSpeaker, setCurrentSpeaker] = useState<Speaker>(null);
   const [microphoneOpen, setMicrophoneOpen] = useState(true);

@@ -18,7 +18,7 @@ export const AgentChatBubble = ({ message }: { message: any }) => {
             <div className="flex items-start gap-2 flex-col md:flex-row max-w-full md:max-w-none">
               <div className="min-w-12 text-white shrink-0">
                 {message?.voice ? (
-                  <Avatar src={"/aura-asteria-en.svg"} />
+                  <Avatar src={"/aura-2-thalia-en.svg"} />
                 ) : (
                   <DgSvg />
                 )}
