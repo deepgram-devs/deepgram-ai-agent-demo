@@ -11,7 +11,7 @@ export const AgentSettings = () => {
           LLM: <span className="text-white">Claude 3 Haiku</span>
         </span>
         <span className="hidden md:inline-block text-white/50 font-inter">
-          Voice: <span className="text-white">Asteria</span>
+          Voice: <span className="text-white">Thalia</span>
         </span>
       </div>
     </>
@@ -44,11 +44,10 @@ export const AgentControls = () => {
       </div>
       <div className="flex bg-[#101014] rounded-full justify-center">
         <span
-          className={`rounded-full p-0.5 ${
-            microphoneOpen
+          className={`rounded-full p-0.5 ${microphoneOpen
               ? "bg-gradient-to-r bg-gradient to-[#13EF93]/50 from-red-500"
               : "bg-gradient-to-r bg-gradient to-[#13EF93]/50 from-[#149AFB]/80"
-          }`}
+            }`}
         >
           <Tooltip showArrow content="Toggle microphone on/off.">
             <a
