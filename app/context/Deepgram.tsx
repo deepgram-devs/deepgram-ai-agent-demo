@@ -34,8 +34,8 @@ interface DeepgramContextInterface {
 
 const DeepgramContext = createContext({} as DeepgramContext);
 
-const DEFAULT_TTS_MODEL = 'aura-asteria-en';
-const DEFAULT_STT_MODEL = 'nova-2';
+const DEFAULT_TTS_MODEL = 'aura-2-thalia-en';
+const DEFAULT_STT_MODEL = 'nova-3';
 
 const defaultTtsOptions = {
   model: DEFAULT_TTS_MODEL
@@ -62,76 +62,76 @@ const voices: {
   };
 } = {
   [DEFAULT_TTS_MODEL]: {
-    name: "Asteria",
-    avatar: "/aura-asteria-en.svg",
+    name: "Thalia",
+    avatar: "/aura-2-thalia-en.svg",
     language: "English",
-    accent: "US",
+    accent: "AMERICAN",
   },
-  "aura-luna-en": {
-    name: "Luna",
-    avatar: "/aura-luna-en.svg",
+  "aura-2-andromeda-en": {
+    name: "Andromeda",
+    avatar: "/aura-2-andromeda-en.svg",
     language: "English",
-    accent: "US",
+    accent: "AMERICAN",
   },
-  "aura-stella-en": {
-    name: "Stella",
-    avatar: "/aura-stella-en.svg",
+  "aura-2-delia-en": {
+    name: "Delia",
+    avatar: "/aura-2-delia-en.svg",
     language: "English",
-    accent: "US",
+    accent: "AMERICAN",
   },
-  "aura-athena-en": {
-    name: "Athena",
-    avatar: "/aura-athena-en.svg",
+  "aura-2-amalthea-en": {
+    name: "Amalthea",
+    avatar: "/aura-2-amalthea-en.svg",
     language: "English",
-    accent: "UK",
+    accent: "FILIPINA",
   },
-  "aura-hera-en": {
-    name: "Hera",
-    avatar: "/aura-hera-en.svg",
+  "aura-2-helena-en": {
+    name: "Helena",
+    avatar: "/aura-2-helena-en.svg",
     language: "English",
-    accent: "US",
+    accent: "AMERICAN",
   },
-  "aura-orion-en": {
-    name: "Orion",
-    avatar: "/aura-orion-en.svg",
+  "aura-2-theia-en": {
+    name: "Theia",
+    avatar: "/aura-2-theia-en.svg",
     language: "English",
-    accent: "US",
+    accent: "AUSTRALIAN",
   },
-  "aura-arcas-en": {
+  "aura-2-draco-en": {
+    name: "Draco",
+    avatar: "/aura-2-draco-en.svg",
+    language: "English",
+    accent: "BRITISH",
+  },
+  "aura-2-apollo-en": {
+    name: "Apollo",
+    avatar: "/aura-2-apollo-en.svg",
+    language: "English",
+    accent: "AMERICAN",
+  },
+  "aura-2-aries-en": {
+    name: "Aries",
+    avatar: "/aura-2-aries-en.svg",
+    language: "English",
+    accent: "AMERICAN",
+  },
+  "aura-2-hyperion-en": {
+    name: "Hyperion",
+    avatar: "/aura-2-hyperion-en.svg",
+    language: "English",
+    accent: "AUSTRALIAN",
+  },
+  "aura-2-arcas-en": {
     name: "Arcas",
-    avatar: "/aura-arcas-en.svg",
+    avatar: "/aura-2-arcas-en.svg",
     language: "English",
-    accent: "US",
+    accent: "AMERICAN",
   },
-  "aura-perseus-en": {
-    name: "Perseus",
-    avatar: "/aura-perseus-en.svg",
+  "aura-2-harmonia-en": {
+    name: "Harmonia",
+    avatar: "/aura-2-harmonia-en.svg",
     language: "English",
-    accent: "US",
-  },
-  "aura-angus-en": {
-    name: "Angus",
-    avatar: "/aura-angus-en.svg",
-    language: "English",
-    accent: "Ireland",
-  },
-  "aura-orpheus-en": {
-    name: "Orpheus",
-    avatar: "/aura-orpheus-en.svg",
-    language: "English",
-    accent: "US",
-  },
-  "aura-helios-en": {
-    name: "Helios",
-    avatar: "/aura-helios-en.svg",
-    language: "English",
-    accent: "UK",
-  },
-  "aura-zeus-en": {
-    name: "Zeus",
-    avatar: "/aura-zeus-en.svg",
-    language: "English",
-    accent: "US",
+    accent: "AMERICAN",
   },
 };
 

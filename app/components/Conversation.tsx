@@ -76,7 +76,7 @@ export default function Conversation(): JSX.Element {
   const requestTtsAudio = useCallback(
     async (message: Message) => {
       const start = Date.now();
-      const model = ttsOptions?.model ?? "aura-asteria-en";
+      const model = ttsOptions?.model ?? "aura-2-thalia-en";
 
       const res = await fetch(`/api/speak?model=${model}`, {
         cache: "no-store",
@@ -446,9 +446,8 @@ export default function Conversation(): JSX.Element {
             <div className="flex flex-col flex-auto h-full">
               <div className="flex flex-col justify-between h-full">
                 <div
-                  className={`flex flex-col h-full overflow-hidden ${
-                    initialLoad ? "justify-center" : "justify-end"
-                  }`}
+                  className={`flex flex-col h-full overflow-hidden ${initialLoad ? "justify-center" : "justify-end"
+                    }`}
                 >
                   <div className="grid grid-cols-12 overflow-x-auto gap-y-2">
                     {initialLoad ? (

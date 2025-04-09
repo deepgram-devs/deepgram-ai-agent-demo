@@ -29,7 +29,7 @@ const ModelSelection = ({
 }) => {
   return (
     <Select
-      defaultSelectedKeys={["aura-model-asteria"]}
+      defaultSelectedKeys={["aura-model-thalia"]}
       selectedKeys={[model]}
       onSelectionChange={(keys: any) =>
         setModel(keys.entries().next().value[0])
