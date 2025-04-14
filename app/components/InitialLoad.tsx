@@ -18,10 +18,10 @@ export const InitialLoad = ({ fn, connecting = true }: { fn: () => void, connect
             AI Agent Tech Demo.
           </h2>
           <div className="flex justify-center mt-4">
-            <ul className="list-disc list-inside marker:text-[#13EF93]">
-              <li className="text-center">Nova-2 Speech-to-Text</li>
-              <li className="text-center">OpenAI GPT-3.5 Turbo</li>
-              <li className="text-center">Aura Text-to-Speech</li>
+            <ul className="list-disc marker:text-[#13EF93] pl-5">
+              <li className="pl-2">Nova-3 Speech-to-Text</li>
+              <li className="pl-2">OpenAI GPT-3.5 Turbo</li>
+              <li className="pl-2">Aura-2 Text-to-Speech</li>
             </ul>
           </div>
           <span className="mt-4 block font-semibold">
