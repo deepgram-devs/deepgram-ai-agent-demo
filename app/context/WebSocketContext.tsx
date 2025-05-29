@@ -67,8 +67,8 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
   const { token } = useAuth();
   // State
   const [connection, setConnection] = useState(false);
-  const [voice, setVoice] = useState("aura-2-thalia-en");
-  const [model, setModel] = useState("anthropic+claude-3-haiku-20240307");
+  const [voice, setVoice] = useState("aura-2-cressida-en");
+  const [model, setModel] = useState("open_ai+gpt-4o-mini");
   const [currentSpeaker, setCurrentSpeaker] = useState<Speaker>(null);
   const [microphoneOpen, setMicrophoneOpen] = useState(true);
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
@@ -89,47 +89,63 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
 
   // Config settings
   const [configSettings, setConfigSettings] = useState({
-    type: "SettingsConfiguration",
+    type: "Settings",
     audio: {
-      input: { encoding: "linear32", sample_rate: 48000 },
-      output: { encoding: "linear16", sample_rate: 48000, container: "none" },
+      input: { encoding: "linear16", sample_rate: 16000 },
+      output: { encoding: "linear16", sample_rate: 24000, container: "none" }
     },
     agent: {
-      listen: { model: "nova-2" },
+      listen: { 
+        provider: { 
+          type: "deepgram",
+          model: "nova-2" 
+        }
+      },
       think: {
         provider: {
           type: model.split("+")[0],
+          model: model.split("+")[1]
         },
-        model: model.split("+")[1],
-        instructions: systemContent,
+        prompt: systemContent
       },
-      speak: { model: voice },
-    },
+      speak: { 
+        provider: { 
+          type: "deepgram",
+          model: voice 
+        }
+      }
+    }
   });
 
   // WebSocket setup
   const { sendMessage, lastMessage, readyState, getWebSocket } = useWebSocket(
     socketURL,
     {
-      // protocols: ["token", DEEPGRAM_API_KEY],
       protocols: apiKey ? ["token", apiKey] : undefined,
       share: true,
       onOpen: () => {
-        console.log(apiKey);
+        console.log("WebSocket connection opened");
+        console.log("API Key:", apiKey);
+        console.log("Socket URL:", socketURL);
         const socket = getWebSocket();
         if (socket instanceof WebSocket) {
           socket.binaryType = "arraybuffer";
         }
         setConnection(true);
+        console.log("Sending initial settings:", configSettings);
         sendMessage(JSON.stringify(configSettings));
         startPingInterval();
       },
       onError: (error) => {
-        console.log(apiKey);
         console.error("WebSocket error:", error);
+        console.log("Current API Key:", apiKey);
+        console.log("Current Socket URL:", socketURL);
         stopPingInterval();
       },
-      onClose: () => stopPingInterval(),
+      onClose: (event) => {
+        console.log("WebSocket closed:", event.code, event.reason);
+        stopPingInterval();
+      },
       onMessage: handleWebSocketMessage,
       retryOnError: true,
     }
@@ -138,20 +154,29 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
   // WebSocket message handler
   function handleWebSocketMessage(event: MessageEvent) {
     if (typeof event.data === "string") {
-      console.log(event);
+      console.log("Received message:", event.data);
       const msgObj = JSON.parse(event.data);
       const { type: messageType } = msgObj;
 
       switch (messageType) {
+        case "Welcome":
+          console.log("Connected to Voice Agent v1", msgObj);
+          break;
+        case "SettingsApplied":
+          console.log("Settings applied successfully", msgObj);
+          break;
         case "UserStartedSpeaking":
+          console.log("User started speaking");
           setCurrentSpeaker("user");
           clearScheduledAudio();
           incomingMessage.current = null;
           break;
-        case "AgentStartedSpeaking":
+        case "AgentThinking":
+          console.log("Agent is thinking");
           setCurrentSpeaker("model");
           break;
         case "ConversationText":
+          console.log("Received conversation text:", msgObj);
           if (msgObj.content && msgObj.role === "user") {
             setChatMessages((prev) => [
               ...prev,
@@ -169,8 +194,6 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
                 const index = updatedMessages.findIndex(
                   (item) => item.id === incomingMessage.current?.id
                 );
-                console.log("index");
-                console.log(index);
                 if (index !== -1) {
                   updatedMessages[index] = {
                     ...incomingMessage.current,
@@ -188,6 +211,7 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
           }
           break;
         case "AgentAudioDone":
+          console.log("Agent audio done");
           const ms = { ...incomingMessage.current };
           if (ms && Object.keys(ms).length) {
             setChatMessages((p) => [...p, ms as Message]);
@@ -195,8 +219,21 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
           setCurrentSpeaker("user-waiting");
           incomingMessage.current = null;
           break;
+        case "Warning":
+          console.warn("Voice Agent Warning:", msgObj.description);
+          break;
+        case "Error":
+          console.error("Voice Agent Error:", msgObj.description, msgObj.code);
+          break;
+        case "PromptUpdated":
+          console.log("Prompt updated successfully", msgObj);
+          break;
+        case "SpeakUpdated":
+          console.log("Speak configuration updated successfully", msgObj);
+          break;
       }
     } else if (event.data instanceof ArrayBuffer) {
+      console.log("Received audio data of length:", event.data.byteLength);
       if (incomingMessage.current) {
         incomingMessage.current.audio = incomingMessage.current.audio
           ? concatArrayBuffers(incomingMessage.current.audio, event.data)
@@ -221,7 +258,7 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
       const audioBuffer = audioContext.createBuffer(
         1,
         audioDataView.length,
-        48000
+        24000
       );
       const audioBufferChannel = audioBuffer.getChannelData(0);
 
@@ -339,7 +376,10 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
     setMicrophoneOpen(true);
     stopPingInterval();
 
-    const audioContext = new AudioContext();
+    const audioContext = new AudioContext({
+      sampleRate: 16000,
+      latencyHint: 'interactive'
+    });
     audioContextRef.current = audioContext;
 
     if (audioContext.state === "suspended") {
@@ -349,11 +389,11 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
-          sampleRate: 48000,
+          sampleRate: 16000,
           channelCount: 1,
           echoCancellation: true,
           autoGainControl: true,
-          noiseSuppression: false,
+          noiseSuppression: true
         },
       });
 
@@ -367,7 +407,15 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
 
       processor.onaudioprocess = (event) => {
         const inputData = event.inputBuffer.getChannelData(0);
-        sendMessage(inputData.buffer);
+        // Convert float32 to int16
+        const pcmData = new Int16Array(inputData.length);
+        for (let i = 0; i < inputData.length; i++) {
+          // Convert float32 [-1, 1] to int16 [-32768, 32767]
+          const s = Math.max(-1, Math.min(1, inputData[i]));
+          pcmData[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+        }
+        console.log("Sending audio chunk of length:", pcmData.length);
+        sendMessage(pcmData.buffer);
       };
 
       microphone.connect(processor);
@@ -458,10 +506,15 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
           ...configSettings.agent.think,
           provider: {
             type: provider,
+            model: modelName
           },
-          model: modelName,
         },
-        speak: { model: voice },
+        speak: { 
+          provider: { 
+            type: "deepgram",
+            model: voice 
+          }
+        }
       },
     };
 
