@@ -67,7 +67,7 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
   const { token } = useAuth();
   // State
   const [connection, setConnection] = useState(false);
-  const [voice, setVoice] = useState("aura-2-cressida-en");
+  const [voice, setVoice] = useState("aura-2-thalia-en");
   const [model, setModel] = useState("open_ai+gpt-4o-mini");
   const [currentSpeaker, setCurrentSpeaker] = useState<Speaker>(null);
   const [microphoneOpen, setMicrophoneOpen] = useState(true);
@@ -95,10 +95,10 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
       output: { encoding: "linear16", sample_rate: 24000, container: "none" }
     },
     agent: {
-      listen: { 
-        provider: { 
+      listen: {
+        provider: {
           type: "deepgram",
-          model: "nova-2" 
+          model: "nova-3"
         }
       },
       think: {
@@ -108,10 +108,10 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
         },
         prompt: systemContent
       },
-      speak: { 
-        provider: { 
+      speak: {
+        provider: {
           type: "deepgram",
-          model: voice 
+          model: voice
         }
       }
     }
@@ -509,10 +509,10 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
             model: modelName
           },
         },
-        speak: { 
-          provider: { 
+        speak: {
+          provider: {
             type: "deepgram",
-            model: voice 
+            model: voice
           }
         }
       },
