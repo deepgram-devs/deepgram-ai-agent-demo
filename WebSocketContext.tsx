@@ -95,10 +95,10 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
       output: { encoding: "linear16", sample_rate: 24000, container: "none" }
     },
     agent: {
-      listen: { 
-        provider: { 
+      listen: {
+        provider: {
           type: "deepgram",
-          model: "nova-2" 
+          model: "nova-3"
         }
       },
       think: {
@@ -108,10 +108,10 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
         },
         prompt: systemContent
       },
-      speak: { 
-        provider: { 
+      speak: {
+        provider: {
           type: "deepgram",
-          model: voice 
+          model: voice
         }
       }
     }
@@ -509,10 +509,10 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
             model: modelName
           },
         },
-        speak: { 
-          provider: { 
+        speak: {
+          provider: {
             type: "deepgram",
-            model: voice 
+            model: voice
           }
         }
       },
