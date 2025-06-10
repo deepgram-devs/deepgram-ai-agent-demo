@@ -23,36 +23,26 @@ export async function GET(request: NextRequest) {
   const url = request.url;
   const deepgram = createClient(config.deepGramApiKey ?? "");
 
-  let { result: projectsResult, error: projectsError } =
-    await deepgram.manage.getProjects();
+  let { result: tokenResult, error: tokenError } =
+    await deepgram.auth.grantToken();
 
-  if (projectsError) {
-    return NextResponse.json(projectsError);
+  if (tokenError) {
+    return NextResponse.json(tokenError);
   }
 
-  const project = projectsResult?.projects[0];
-
-  if (!project) {
+  if (!tokenResult) {
     return NextResponse.json(
       new DeepgramError(
-        "Cannot find a Deepgram project. Please create a project first."
+        "Failed to generate temporary token. Make sure your API key is of scope Member or higher."
       )
     );
   }
 
-  let { result: newKeyResult, error: newKeyError } =
-    await deepgram.manage.createProjectKey(project.project_id, {
-      comment: "Temporary API key",
-      scopes: ["usage:write"],
-      tags: ["next.js"],
-      time_to_live_in_seconds: 60,
-    });
-
-  if (newKeyError) {
-    return NextResponse.json(newKeyError);
-  }
-
-  const response = NextResponse.json({ ...newKeyResult, url });
+  const response = NextResponse.json({
+    key: tokenResult.access_token,
+    expires_in: tokenResult.expires_in,
+    url
+  });
   response.headers.set("Surrogate-Control", "no-store");
   response.headers.set(
     "Cache-Control",

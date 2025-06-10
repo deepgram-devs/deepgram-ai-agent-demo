@@ -1,7 +1,11 @@
-import { CreateProjectKeyResponse } from "@deepgram/sdk";
+interface TokenResponse {
+  key: string;
+  expires_in?: number;
+  url?: string;
+}
 
-const getApiKey = async (token: string): Promise<string> => {
-  const result: CreateProjectKeyResponse = await (
+const getToken = async (token: string): Promise<string> => {
+  const result: TokenResponse = await (
     await fetch("/api/authenticate", {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -13,4 +17,4 @@ const getApiKey = async (token: string): Promise<string> => {
   return result.key;
 };
 
-export { getApiKey };
+export { getToken };

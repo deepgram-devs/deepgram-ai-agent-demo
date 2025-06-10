@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@deepgram/sdk": "^3.2.0-alpha.1",
+    "@deepgram/sdk": "^4.1.1",
     "@fullstory/browser": "^2.0.3",
     "@next/third-parties": "^14.1.0",
     "@nextui-org/react": "^2.2.10",

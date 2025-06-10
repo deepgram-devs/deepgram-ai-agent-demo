@@ -10,7 +10,7 @@ import React, {
   useCallback,
 } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
-import { getApiKey } from "../lib/helpers";
+import { getToken } from "../lib/helpers";
 import { useAuth } from "./Auth";
 import { systemContent } from "../lib/constants";
 
@@ -121,7 +121,7 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
   const { sendMessage, lastMessage, readyState, getWebSocket } = useWebSocket(
     socketURL,
     {
-      protocols: apiKey ? ["token", apiKey] : undefined,
+      protocols: apiKey ? ["bearer", apiKey] : undefined,
       share: true,
       onOpen: () => {
         console.log("WebSocket connection opened");
@@ -478,7 +478,7 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
     if (token) {
       const fetchApiKey = async () => {
         try {
-          const key = await getApiKey(token as string);
+          const key = await getToken(token as string);
           setApiKey(key);
         } catch (error) {
           console.error("Failed to fetch API key:", error);
