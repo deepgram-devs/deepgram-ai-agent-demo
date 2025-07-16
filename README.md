@@ -57,14 +57,14 @@ Copy the code from `sample.env.local` and create a new file called `.env.local`.
 ```bash
 DEEPGRAM_STT_DOMAIN=https://api.deepgram.com
 DEEPGRAM_API_KEY=YOUR-DG-API-KEY
-OPENAI_API_KEY=YOUR-OPENAI-API-KEY
+NEXT_PUBLIC_DEEPGRAM_SOCKET_URL=wss://agent.deepgram.com/v1/agent/converse
 DEEPGRAM_ENV=development or production
 JWT_SECRET=YOUR-JWT-SECRET
 ```
 
 1. For `DEEPGRAM_API_KEY` paste in the key you generated in the [Deepgram Console](https://console.deepgram.com/).
 2. Set `DEEPGRAM_STT_DOMAIN` to be `https://api.deepgram.com`.
-3. The`OPENAI_API_KEY` should be an OpenAI API Key that can access the chat completions API.
+3. The`NEXT_PUBLIC_DEEPGRAM_SOCKET_URL` to be `wss://agent.deepgram.com/v1/agent/converse`.
 4. For `DEEPGRAM_ENV`: This is a custom environment variable specific to this application and is used to determine how API keys are handled. In development mode, it uses the API key directly from the environment. In production, it would create temporary API keys for each session.
 5. For `JWT_SECRET`: This is used for JSON Web Token (JWT) authentication. The application uses this for: Generating authentication tokens when users first visit. Verifying tokens for protected API routes and securing the WebSocket connection
 
