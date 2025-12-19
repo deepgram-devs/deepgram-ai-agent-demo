@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "security-check": "snyk test --severity-threshold=low --package-manager=pnpm --fail-on=all"
   },
   "dependencies": {
     "@deepgram/sdk": "^4.1.1",

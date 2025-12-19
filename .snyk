@@ -1,0 +1,5 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.0
+# Empty ignore ensures all vulnerabilities are detected
+# {} not needed. When Snyk parses the .snyk file, it sees an empty ignore section and proceeds to report all vulnerabilities.
+ignore:

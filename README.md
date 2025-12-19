@@ -40,14 +40,14 @@ Follow these steps to get started with this starter application.
 
 #### Clone the repository
 
-Go to GitHub and [clone the repository](https://github.com/deepgram-starters/live-nextjs-starter).
+Go to GitHub and [clone the repository](https://github.com/deepgram-devs/deepgram-ai-agent-demo).
 
 #### Install dependencies
 
 Install the project dependencies.
 
 ```bash
-npm install
+pnpm install
 ```
 
 #### Edit the config file
@@ -73,14 +73,14 @@ JWT_SECRET=YOUR-JWT-SECRET
 Once running, you can [access the application in your browser](http://localhost:3000).
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 ## Getting Help
 
 We love to hear from you so if you have questions, comments or find a bug in the project, let us know! You can either:
 
-- [Open an issue in this repository](https://github.com/deepgram-devs/deepgram-aura-tts-demo/issues)
+- [Open an issue in this repository](https://github.com/deepgram-devs/deepgram-ai-agent-demo/issues)
 - [Join the Deepgram Github Discussions Community](https://github.com/orgs/deepgram/discussions)
 - [Join the Deepgram Discord Community](https://discord.gg/xWRaCDBtW4)
 
