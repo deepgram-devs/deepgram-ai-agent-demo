@@ -1,4 +1,4 @@
-import { Message } from "ai/react";
+import { Message } from "../lib/types";
 import { TextContent } from "./TextContext";
 import { UserAvatar } from "./UserAvatar";
 
