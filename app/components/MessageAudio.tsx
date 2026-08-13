@@ -38,7 +38,7 @@ const AgentMessageAudio = ({
     const audioBuffer = audioContext.createBuffer(
       1,
       audioDataView.length,
-      48000
+      24000
     );
     const audioBufferChannel = audioBuffer.getChannelData(0);
 
